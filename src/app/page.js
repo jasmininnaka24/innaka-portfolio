@@ -42,18 +42,16 @@ const Home = () => {
     <main className='main-bg-linear text-dark'>
       {/* navigation */}
 
-      <div className='fixed w-full bg-white m-0' style={{ zIndex: 10 }}>
-        <nav className={`flex items-center justify-between full-width py-6`}>
+      <div className='fixed w-full bg-white m-0' style={{ boxShadow: '0 2px 5px #e9e4e4', zIndex: 10 }}>
+        <nav className={`flex items-center justify-between full-width py-3`}>
           <h2 className='text-center quicksand py-1 mr-10 font-bold rounded-full text-secondary-dark'><a href="#" className='font-bold text-3xl text-primary'>JI</a></h2>
-          <ul class="flex items-center gap-3 text-center SMN_effect-39">
-            <li><a className='text-center quicksand text-dark' href="#about">About</a></li>
-            <li><a className='text-center quicksand text-dark' href="#works">Works</a></li>
-            <li><a className='text-center quicksand text-dark' href="#">Experience</a></li>
-          </ul>
 
-          <div>
-            <button><a className='text-center quicksand py-2 bg-primary text-light rounded quicksand px-3' href="#">Contacts</a></button>
-          </div>
+            <ul class="flex items-center gap-3 text-center SMN_effect-39">
+              <li><a className='text-center quicksand link-nav text-dark' href="#about">About</a></li>
+              <li><a className='text-center quicksand link-nav text-dark' href="#projects">Projects</a></li>
+              <li><a className='text-center quicksand link-nav text-dark' href="#experience">Qualifications</a></li>
+              <li><a className='text-center quicksand bg-primary text-light rounded quicksand px-3 link-nav-contact' href="#">Contacts</a></li>
+            </ul>
         </nav>
       </div>
 
@@ -79,7 +77,7 @@ const Home = () => {
                 </div>
               </div>
 
-              <h4 className='text-md mt-8 text-secondary-dark'>21-year old IT student who builds <span className='bg-secondary-light rounded px-2 py-1 text-dark text-md text-dark'>Full-Stack Applications.</span></h4>
+              <h4 className='text-md mt-8 text-secondary-dark'>21-year old IT student who builds <span className='bg-secondary-light rounded px-2 py-1 text-dark text-md text-dark'>Software Applications.</span></h4>
               <h4 className='text-md mt-2 text-secondary-dark'>I embrace minimalism and simplicity, along with the elegance they unveil.</h4>
 
 
@@ -102,12 +100,12 @@ const Home = () => {
           <div className='flex gap-11'>
             <article className='w-1/2 relative'>            
               <div>
-                <h4 className='font-bold text-2xl text-primary-dark '>About Me</h4>
+                <h4 className='font-bold text-4xl text-primary-dark '>About Me</h4>
                 <div className='bg-primary font-bold rounded' style={{ height: '3px', width: '2rem' }}></div>
               </div>
               <br />
 
-              <h4 className='font-normal mt-3 text-secondary-dark'>I`m an aspiring <span className='rounded py-1 bg-secondary-light px-2 text-dark'>Full-Stack Developer.</span> Currently practicing <span className='rounded py-1 bg-secondary-light px-2 text-dark'>UX/UI Design.</span></h4>
+              <h4 className='font-normal mt-3 text-secondary-dark'>I`m a <span className='rounded py-1 bg-secondary-light px-2 text-dark'>Software Developer.</span> Currently practicing <span className='rounded py-1 bg-secondary-light px-2 text-dark'>UX/UI Design.</span></h4>
 
 
               <h4 className='font-normal text-secondary-dark mt-5 text-justify'>Productive coding at night till midnight. I love coffee, cats, and rainy season. I like learning new technologies, mostly right after a certain project is finished, grasping other tech stack concepts, as well, intrigues me even more.</h4>
@@ -125,7 +123,7 @@ const Home = () => {
             <article className='w-1/2 relative'>
               
               <div>
-                <h4 className='font-bold text-2xl text-primary-dark '>Technologies I Use</h4>
+                <h4 className='font-bold text-4xl text-primary-dark '>Technologies I Use</h4>
                 <div className='bg-primary font-bold rounded' style={{ height: '3px', width: '2rem' }}></div>
               </div>
               <br />
@@ -182,22 +180,27 @@ const Home = () => {
         </section>
 
 
-        {/* works section */}
+        {/* projects section */}
 
-        <section id='works' style={{ minHeight: '40rem' }} className={`flex py-32 w-full`}>
+        <section id='projects' style={{ minHeight: '40rem' }} className={`flex py-28 w-full`}>
           <div className='w-full'>
 
-            <div className='flex items-center justify-center'>
+            <div className='flex items-center justify-between'>
               <div>
-                <h4 className='font-bold text-2xl text-primary-dark '>My Works</h4>
-                <div className='flex items-center justify-center mt-1'>
-                  <div className='bg-primary font-bold rounded' style={{ height: '3px', width: '2rem' }}></div>
+                <h4 className='font-bold text-4xl text-primary-dark '>Featured Projects</h4>
+                <div className='flex items-center mt-1'>
+                  <div className='bg-primary font-bold rounded' style={{ height: '3px', width: '3rem' }}></div>
                 </div>
               </div>
+              <ul class="flex items-center text-center gap-5">
+                <li><a className='text-center font-bold px-2 quicksand text-dark text-sm' href="#about">All</a></li>
+                <li><a className='text-center px-2 quicksand text-secondary-dark text-sm' href="#projects">Web</a></li>
+                <li><a className='text-center px-2 quicksand text-secondary-dark text-sm' href="#experience">Mobile</a></li>
+              </ul>
             </div>
             <br />
 
-            <article className="w-full relative my-8">
+            <article className="w-full relative my-2">
               <ul className='grid grid-cols-1 gap-5 w-full'>
                 <li className='box-shadow-primary p-6 rounded flex items-center w-full'>
                   <div className='flex items-center'>
@@ -215,9 +218,9 @@ const Home = () => {
                       </ul>
 
 
-                      <h3 className='text-primary-dark font-bold text-xl'>MindScape AI: Capstone Project</h3>
+                      <h3 className='text-semi-dark font-bold text-2xl mt-1'>MindScape AI: Capstone Project</h3>
 
-                      <p className='text-secondary-dark font-medium mt-7 text-justify'>🚀 A web application that harnesses advanced functionalities, such as seamless integration with artificial intelligence and real-time communication capabilities through socket.io. This project showcases innovative technologies to enhance user experiences and foster collaboration among users.</p>
+                      <p className='text-secondary-dark font-medium mt-4 text-justify'>🚀 A web application that harnesses advanced functionalities, such as seamless integration with artificial intelligence and real-time communication capabilities through socket.io. This project showcases innovative technologies to enhance user experiences and foster collaboration among users.</p>
 
                       <br />
                       <div className='flex items-center gap-3'>
@@ -235,6 +238,49 @@ const Home = () => {
                   </div>
                 </li>
               </ul>
+            </article>
+          </div>
+        </section>
+
+
+        {/* experience section */}
+
+        <section id='experience' style={{ minHeight: '40rem' }} className={`flex py-28 w-full`}>
+          <div className='w-full'>
+
+            <div className='flex items-center'>
+              <div>
+                <h4 className='font-bold text-4xl text-primary-dark '>Qualifications</h4>
+                <div className='flex items-center mt-1'>
+                  <div className='bg-primary font-bold rounded' style={{ height: '3px', width: '3rem' }}></div>
+                </div>
+              </div>
+            </div>
+
+            <br /><br />
+
+            <ul class="flex items-center text-center gap-5">
+              <li><a className='text-center font-bold px-2 quicksand text-dark text-sm' href="#about">Experience</a></li>
+              <li><a className='text-center px-2 quicksand text-secondary-dark text-sm' href="#projects">Education</a></li>
+              <li><a className='text-center px-2 quicksand text-secondary-dark text-sm' href="#projects">Credentials</a></li>
+            </ul>
+
+            <article className="w-full relative my-4">
+              <div class="timeline-container w-full p-3">
+                <ul class="tl">
+                  <li style={{ minHeight: '1rem' }}>
+                    <div class="item-icon"></div>
+                    <div className='w-3/4'>
+                      <div class="text-semi-dark text-2xl font-bold">Software Developer Intern | Zamboanga City Hall</div>
+                      <div class="text-secondary-dark text-md mt-2">Currently learning the technologies they use for development, collaborating with my team members on integration and implementation tasks, debugging some bugs and issues, and supporting project development.</div>
+                    </div>
+                    <div class="w-1/3 text-end text-md text-secondary-dark">
+                      February 22, 2024 - Present
+                    </div>
+                  </li>
+                </ul>
+
+              </div>
             </article>
           </div>
         </section>
