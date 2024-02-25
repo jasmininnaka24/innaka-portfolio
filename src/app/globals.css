@@ -50,8 +50,15 @@ html {
   background: #ffe5df;
 }
 
+.bg-secondary-light-dull{
+  background: #ffeae5;
+}
+
 .bg-dull-gray{
   background: #efeded;
+}
+.bg-dull-secondary-gray{
+  background: #f8f6f6;
 }
 .bg-white{
   background: #ffffff;
@@ -124,8 +131,20 @@ html {
 .text-shadow-dull{
   text-shadow: 2px 2px 3px #c6c0c0;
 }
-.box-shadow-primary{
+.box-shadow-dull{
   box-shadow: 0px 0px 8px #d0cbcb;
+}
+.box-shadow-dull-light{
+  box-shadow: 0px 0px 8px #e2dede;
+}
+
+/* borders */
+.border-thin-semi-dark {
+  border: solid 2px #ffffff;
+  transition: all .2s ease-in-out;
+}
+.border-thin-semi-dark:focus {
+  border: solid 2px #56597e;
 }
 
 
@@ -204,7 +223,7 @@ html {
 
 .timeline-container ul.tl li .item-icon {
   position: absolute;
-  left: -16px;
+  left: -15px;
   content: " ";
   border: 8px solid rgba(255, 255, 255, 0.74);
   border-radius: 500%;
