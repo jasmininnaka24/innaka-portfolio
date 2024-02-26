@@ -2,11 +2,11 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <div
+    <nav
       className="fixed w-full bg-white m-0"
       style={{ boxShadow: "0 2px 5px #e9e4e4", zIndex: 10 }}
     >
-      <nav className={`flex items-center justify-between full-width py-3`}>
+      <div className={`flex items-center justify-between full-width py-3`}>
         <h2 className="text-center quicksand py-1 mr-10 font-bold rounded-full text-secondary-dark">
           <a href={"#"} className="font-bold text-3xl text-primary">
             JI
@@ -55,8 +55,8 @@ const Navbar = () => {
             </a>
           </li>
         </ul>
-      </nav>
-    </div>
+      </div>
+    </nav>
   );
 };
 

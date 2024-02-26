@@ -7,6 +7,7 @@ const HeroSection = ({
   LinkedInIcon,
   FacebookRoundedIcon,
   InstagramIcon,
+  Link,
 }) => {
   return (
     <section
@@ -53,24 +54,24 @@ const HeroSection = ({
 
           <ul className="flex items-center gap-6 mt-10">
             <li>
-              <a href={"/"}>
+              <Link href={"/"}>
                 <GitHubIcon className="text-secondary-dark" />
-              </a>
+              </Link>
             </li>
             <li>
-              <a href={"/"}>
+              <Link href={"/"}>
                 <LinkedInIcon className="text-secondary-dark" />
-              </a>
+              </Link>
             </li>
             <li>
-              <a href={"/"}>
+              <Link href={"/"}>
                 <FacebookRoundedIcon className="text-secondary-dark" />
-              </a>
+              </Link>
             </li>
             <li>
-              <a href={"/"}>
+              <Link href={"/"}>
                 <InstagramIcon className="text-secondary-dark" />
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
