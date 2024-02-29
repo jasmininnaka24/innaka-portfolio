@@ -18,7 +18,7 @@ const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
               ></div>
             </div>
           </div>
-          <ul class="flex items-center text-center gap-5">
+          <ul class="flex items-center text-center gap-4">
             <li>
               <Link
                 className="text-center font-bold px-2 quicksand text-dark text-sm"
@@ -41,6 +41,14 @@ const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
                 href={"#qualifications"}
               >
                 Mobile
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="text-center px-2 quicksand text-secondary-dark text-sm"
+                href={"#qualifications"}
+              >
+                Desktop
               </Link>
             </li>
           </ul>
@@ -135,7 +143,7 @@ const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
                   </div>
 
                   <h4 className="text-secondary-dark mt-5 opacity-60 text-sm">
-                    Year: 2023
+                    Date Published: February 16, 2023
                   </h4>
                 </div>
 

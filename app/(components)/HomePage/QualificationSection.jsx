@@ -57,7 +57,7 @@ const QualificationSection = ({ Link }) => {
                 <div class="item-icon"></div>
                 <div className="w-3/4">
                   <div class="text-semi-dark text-2xl font-bold">
-                    Software Developer Intern | Zamboanga City Hall
+                    Software Developer Intern | City Hall of Zamboanga
                   </div>
                   <div class="text-secondary-dark text-md mt-2">
                     Currently learning the technologies they use for

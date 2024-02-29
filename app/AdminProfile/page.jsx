@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import Photo from "../../public/aboutphoto.png";
-import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 // icon imports
@@ -36,9 +35,10 @@ const AdminProfile = () => {
                   style={{ height: "1px", width: "100%" }}
                 ></div>
               </li>
+
               <li className="py-1 text-secondary-dark text-sm">
-                <Link href="" className="text-lg quicksand">
-                  Emails & Bookings
+                <Link href="/AdminPortfolio" className="text-lg quicksand">
+                  Portfolio Details
                 </Link>
                 <div
                   className="rounded"
@@ -47,7 +47,7 @@ const AdminProfile = () => {
               </li>
               <li className="py-1 text-secondary-dark text-sm">
                 <Link href="" className="text-lg quicksand">
-                  Portfolio Details
+                  Emailed Details
                 </Link>
                 <div
                   className="rounded"
@@ -60,24 +60,38 @@ const AdminProfile = () => {
                 <NotificationsIcon />
               </div>
               <button>
-                <div className="flex items-center gap-1 text-lg px-3 rounded text-md bg-primary-dark text-white quicksand">
-                  Logout
-                </div>
+                <Link href={"/"}>
+                  <div className="flex items-center gap-1 text-lg px-3 rounded text-md bg-primary-dark text-white quicksand">
+                    Logout
+                  </div>
+                </Link>
               </button>
             </div>
           </nav>
 
           {/* Profile Details */}
+
           <div
             className="px-5 py-5 full-width flex gap-3"
             style={{ borderTop: "solid 1px #efeded" }}
           >
             <article className="w-2/3">
-              <form action="" className="w-full">
+              {/* <h2 className="text-primary font-bold text-3xl quicksand">
+                Hero Section Information:{" "}
+              </h2>
+              <div
+                className="bg-primary-dark rounded mt-1"
+                style={{ height: "3px", width: "4rem" }}
+              ></div>
+
+              <br /> */}
+
+              <form action="" className="w-full mt-5">
                 <div className="flex items-center justify-center gap-3 mt-4">
                   <div className="w-full">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold">
-                      Full Name<span className="text-primary font-bold">*</span>
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                      Full Name
+                      <span className="text-primary font-bold"> *</span>
                     </p>
                     <input
                       type="text"
@@ -87,8 +101,8 @@ const AdminProfile = () => {
                     />
                   </div>
                   <div className="w-full">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold">
-                      Email<span className="text-primary font-bold">*</span>
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                      Email<span className="text-primary font-bold"> *</span>
                     </p>
                     <input
                       type="email"
@@ -102,8 +116,9 @@ const AdminProfile = () => {
                 <br />
                 <div className="mt-4">
                   <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold">
-                      Headlines<span className="text-primary font-bold">*</span>
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                      Headlines
+                      <span className="text-primary font-bold"> *</span>
                     </p>
 
                     <button>
@@ -138,9 +153,9 @@ const AdminProfile = () => {
                 <br />
                 <div className="mt-4">
                   <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold">
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
                       Highlighted Word(s)
-                      <span className="text-primary font-bold">*</span>
+                      <span className="text-primary font-bold"> *</span>
                     </p>
 
                     <button>
@@ -163,9 +178,9 @@ const AdminProfile = () => {
                 <br />
                 <div className="mt-4">
                   <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold">
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
                       Social Media Account Links
-                      <span className="text-primary font-bold">*</span>
+                      <span className="text-primary font-bold"> *</span>
                     </p>
                   </div>
 
@@ -247,15 +262,15 @@ const AdminProfile = () => {
               </form>
             </article>
 
-            {/* <article className="w-1/3">
+            <article className="w-1/3">
               <form
-                className={`flex items-center justify-center px-8 gap-8 pt-5`}
+                className={`flex items-center justify-center flex-col px-8 gap-8 pt-5`}
               >
                 <div
                   className="p-2 rounded-full"
                   {...getRootProps()}
                   style={{
-                    width: "220px",
+                    width: "15rem",
                     cursor: "pointer",
                     border: "3px dashed #888",
                   }}
@@ -263,11 +278,11 @@ const AdminProfile = () => {
                   <input {...getInputProps()} name="image" type="file" />
                   {acceptedFiles.length === 0 ? (
                     <Image
-                      src=""
-                      width={200}
-                      height={200} // Specify the height property
+                      src={Photo}
                       className="rounded-full"
                       style={{
+                        width: "15rem",
+                        height: "15rem",
                         objectFit: "cover",
                       }}
                       alt=""
@@ -276,19 +291,21 @@ const AdminProfile = () => {
                     <>
                       <Image
                         src={URL.createObjectURL(acceptedFiles[0])}
-                        width={200}
-                        height={200} // Specify the height property
                         className="rounded-full"
                         style={{
+                          width: "15rem",
+                          height: "15rem",
                           objectFit: "cover",
                         }}
                         alt=""
+                        width={150} // Specify the width of the image
+                        height={150} // Specify the height of the image
                       />
                     </>
                   )}
                 </div>
 
-                <div className={`text-start`}>
+                <div className={`text-center`}>
                   <p className="text-2xl mb-1 font-medium mcolor-800">
                     Upload a new photo
                   </p>
@@ -297,14 +314,16 @@ const AdminProfile = () => {
                   </p>
 
                   <button
-                    className={`px-10 py-2 rounded`}
+                    className={`px-10 py-2 rounded w-full`}
                     onClick={(e) => updateUserImage(e, 1)}
                   >
-                    <div>Update</div>
+                    <div className="bg-primary text-white w-full py-2 rounded">
+                      Update
+                    </div>
                   </button>
                 </div>
               </form>
-            </article> */}
+            </article>
           </div>
         </div>
       </div>

@@ -79,10 +79,6 @@ const ContactSection = ({
           <br />
 
           <div className="flex items-center gap-5">
-            <button className="bg-dull-gray text-dark text-sm px-5 py-2 font-normal rounded">
-              Book a meeting{" "}
-              <CalendarMonthIcon className="ml-1" fontSize="small" />
-            </button>
             <div className="relative">
               <Link href={"#about"} class="text-sm text-dark">
                 View my Resume <NorthEastIcon style={{ fontSize: "15px" }} />
