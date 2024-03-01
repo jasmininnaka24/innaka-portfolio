@@ -2425,12 +2425,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
@@ -2449,12 +2443,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
@@ -2473,12 +2461,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
@@ -2497,12 +2479,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
@@ -2521,12 +2497,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
@@ -2545,12 +2515,6 @@ const PortfolioDetails = () => {
                       <li className="rounded flex items-center w-full">
                         <div className="w-full flex flex-col items-end justify-center">
                           <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
-                            <button
-                              className="text-primary-dark"
-                              onClick={() => setOnEditMode(true)}
-                            >
-                              <BorderColorIcon fontSize="small" />
-                            </button>
                             <button className="pt-1 text-red">
                               <DeleteSweepIcon />
                             </button>
