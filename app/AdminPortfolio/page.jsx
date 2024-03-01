@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import shortid from "shortid";
 import { useDropzone } from "react-dropzone";
 
@@ -29,12 +29,21 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
+import CloseIcon from "@mui/icons-material/Close";
 
 const PortfolioDetails = () => {
   const [selectedfile, SetSelectedFile] = useState("");
   const [Files, SetFiles] = useState([]);
   const [onEditMode, setOnEditMode] = useState(false);
   const [onEditModeID, setOnEditModeID] = useState(false);
+
+  // crud pop-up states
+  const [added, setAdded] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [warning, setWarning] = useState(false);
+  const [error, setError] = useState(false);
+  const [msg, setMsg] = useState(false);
 
   // categories states
   const [aboutCategory, setAboutCategory] = useState(true);
@@ -48,14 +57,21 @@ const PortfolioDetails = () => {
   const [credentials, setCredentials] = useState(false);
 
   // for multiple images upload
-  const [totalFiles, setTotalFiles] = useState(0);
-  const [previewTitle, setPreviewTitle] = useState(null);
   const [images, setImages] = useState([]);
 
-  // project image upload
-  const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
+  // arrays for multiple inputs
+
+  const [aboutArr, setAboutArr] = useState([]);
+  const [aboutHighlightsArr, setAboutHighlightsArr] = useState([]);
+  const [projectTechsUsedArr, setProjectTechsUsedArr] = useState([]);
+
+  // multiple images upload states
+  const [acceptedFiles, setAcceptedFiles] = useState([]);
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
       setImage(acceptedFiles[0]);
+      // Clear acceptedFiles immediately after uploading
+      setAcceptedFiles([]);
     },
   });
 
@@ -65,14 +81,6 @@ const PortfolioDetails = () => {
     event.preventDefault();
 
     const files = event.target.files;
-    setTotalFiles(files.length);
-
-    if (totalFiles) {
-      const title = (
-        <p style={{ fontWeight: "bold" }}>{totalFiles} Total Images Selected</p>
-      );
-      setPreviewTitle(title);
-    }
 
     const imgArray = Array.from(files);
     imgArray.forEach((file) => {
@@ -90,6 +98,13 @@ const PortfolioDetails = () => {
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  // removing image from an array
+  const handleRemoveImage = (indexToRemove) => {
+    setImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   // resume upload
@@ -155,6 +170,69 @@ const PortfolioDetails = () => {
     }
   };
 
+  // functions for adding about inputs
+  const addAboutMeArrInfo = () => {
+    if (aboutArr.length === 0 || aboutArr.every((item) => item !== "")) {
+      setAboutArr([...aboutArr, ""]);
+    }
+  };
+
+  const handleAboutMeArrInfo = (e, index) => {
+    const newArr = [...aboutArr];
+    newArr[index] = e.target.value;
+    setAboutArr(newArr);
+  };
+
+  const removeAboutMeArrInfo = (indexToRemove) => {
+    setAboutArr((prevArr) =>
+      prevArr.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  // functions for adding about highlights
+  const addAboutHighlightsArr = () => {
+    if (
+      aboutHighlightsArr.length === 0 ||
+      aboutHighlightsArr.every((item) => item !== "")
+    ) {
+      setAboutHighlightsArr([...aboutHighlightsArr, ""]);
+    }
+  };
+
+  const handleAboutHighlightsArr = (e, index) => {
+    const newArr = [...aboutHighlightsArr];
+    newArr[index] = e.target.value;
+    setAboutHighlightsArr(newArr);
+  };
+
+  const removeAboutHighlightsArr = (indexToRemove) => {
+    setAboutHighlightsArr((prevArr) =>
+      prevArr.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  // functions for adding project tech used
+  const addProjectTechUsed = () => {
+    if (
+      projectTechsUsedArr.length === 0 ||
+      projectTechsUsedArr.every((item) => item !== "")
+    ) {
+      setProjectTechsUsedArr([...projectTechsUsedArr, ""]);
+    }
+  };
+
+  const handleProjectTechUsed = (e, index) => {
+    const newArr = [...projectTechsUsedArr];
+    newArr[index] = e.target.value;
+    setProjectTechsUsedArr(newArr);
+  };
+
+  const removeProjectTechUsed = (indexToRemove) => {
+    setProjectTechsUsedArr((prevArr) =>
+      prevArr.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
   return (
     <main className="main-bg-linear text-dark ">
       <div className="flex items-start bg-dull-secondary-gray py-5">
@@ -211,7 +289,29 @@ const PortfolioDetails = () => {
             className="px-5 py-5 full-width"
             style={{ borderTop: "solid 1px #efeded" }}
           >
+            <div
+              className={`w-full text-center mt-5 bg-green-100 py-2 rounded ${
+                added ? "" : "hidden"
+              } `}
+            >
+              Successfully Added
+            </div>
+            <div
+              className={`w-full text-center mt-5 bg-green-100 py-2 rounded ${
+                updated ? "" : "hidden"
+              } `}
+            >
+              Successfully Updated
+            </div>
+            <div
+              className={`w-full text-center mt-5 bg-green-100 py-2 rounded ${
+                deleted ? "" : "hidden"
+              } `}
+            >
+              Successfully Deleted
+            </div>
             <br />
+
             <div className="flex items-center gap-5">
               <div className="w-1/2 flex items-center outline-none gap-4 pr-3">
                 <h2 className="text-primary font-bold text-2xl quicksand">
@@ -231,6 +331,8 @@ const PortfolioDetails = () => {
                         setQualificationsCategory(false);
                         setServicesCategory(false);
                         setOnEditMode(false);
+                        setAcceptedFiles([]);
+                        setImages([]); // Clear the images when changing the category
                         break;
                       case "Projects":
                         setAboutCategory(false);
@@ -238,6 +340,8 @@ const PortfolioDetails = () => {
                         setQualificationsCategory(false);
                         setServicesCategory(false);
                         setOnEditMode(false);
+                        setAcceptedFiles([]);
+                        setImages([]); // Clear the images when changing the category
                         break;
                       case "Qualifications":
                         setAboutCategory(false);
@@ -245,6 +349,8 @@ const PortfolioDetails = () => {
                         setQualificationsCategory(true);
                         setServicesCategory(false);
                         setOnEditMode(false);
+                        setAcceptedFiles([]);
+                        setImages([]); // Clear the images when changing the category
                         break;
                       case "Services":
                         setAboutCategory(false);
@@ -252,6 +358,8 @@ const PortfolioDetails = () => {
                         setQualificationsCategory(false);
                         setServicesCategory(true);
                         setOnEditMode(false);
+                        setAcceptedFiles([]);
+                        setImages([]); // Clear the images when changing the category
                         break;
                       default:
                         // Handle default case or do nothing
@@ -288,308 +396,414 @@ const PortfolioDetails = () => {
 
             {/* about section crud */}
             {aboutCategory && (
-              <div className="flex gap-5">
-                <article className="w-1/2 border-dull-gray-right pr-5">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        About me
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
+              <div>
+                <div className="flex gap-5">
+                  <article className="w-1/2 border-dull-gray-right pr-5">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          About me
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
 
-                      <button>
-                        <AddIcon />
-                      </button>
-                    </div>
+                        <button onClick={addAboutMeArrInfo}>
+                          <AddIcon />
+                        </button>
+                      </div>
 
-                    <ul className="grid grid-cols-1 gap-2">
-                      <li className="w-full">
-                        <textarea
-                          name=""
-                          id=""
-                          rows="5"
-                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                          placeholder="Type here..."
+                      {aboutArr.map((item, index) => (
+                        <div
+                          className="relative w-full flex items-center justify-between"
+                          key={index}
                         >
-                          I`m a Software Developer. Currently practicing UX/UI
-                          Design. Productive coding at night till midnight. I
-                          love coffee, cats, and rainy season.
-                        </textarea>
-                      </li>
-                    </ul>
-                  </div>
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={item}
+                            onChange={(e) => handleAboutMeArrInfo(e, index)}
+                          />
 
-                  <br />
-                  <div className="mt-5">
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        Highlighted Word(s)
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={() => removeAboutMeArrInfo(index)}
+                          >
+                            <CloseIcon />
+                          </button>
+                        </div>
+                      ))}
 
-                      <button>
-                        <AddIcon />
-                      </button>
+                      <ul className="grid grid-cols-1 gap-2 mt-3">
+                        <li className="w-full">
+                          <textarea
+                            name=""
+                            id=""
+                            rows="5"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                          >
+                            I`m a Software Developer. Currently practicing UX/UI
+                            Design. Productive coding at night till midnight. I
+                            love coffee, cats, and rainy season.
+                          </textarea>
+                        </li>
+                      </ul>
                     </div>
 
-                    <ul className="grid grid-cols-1">
-                      <li className="w-full">
-                        <input
-                          type="text"
-                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                          placeholder="Full Name"
-                          value={"Software Developer."}
-                        />
-                      </li>
-                      <li className="w-full">
-                        <input
-                          type="text"
-                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                          placeholder="Full Name"
-                          value={"UX/UI Design."}
-                        />
-                      </li>
-                    </ul>
-                  </div>
-                </article>
+                    <br />
+                    <div className="mt-5">
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Highlighted Word(s)
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
 
-                <article className="w-1/2">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        Resume Upload
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
+                        <button onClick={addAboutHighlightsArr}>
+                          <AddIcon />
+                        </button>
+                      </div>
+
+                      {aboutHighlightsArr.map((item, index) => (
+                        <div
+                          className="relative w-full flex items-center justify-between"
+                          key={index}
+                        >
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={item}
+                            onChange={(e) => handleAboutHighlightsArr(e, index)}
+                          />
+
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={() => removeAboutHighlightsArr(index)}
+                          >
+                            <CloseIcon />
+                          </button>
+                        </div>
+                      ))}
+
+                      <ul className="grid grid-cols-1 mt-3">
+                        <li className="w-full">
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={"Software Developer."}
+                          />
+                        </li>
+                        <li className="w-full">
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={"UX/UI Design."}
+                          />
+                        </li>
+                      </ul>
                     </div>
+                  </article>
 
-                    <div className="fileupload-view">
-                      <div className="row justify-content-center m-0">
-                        <div className="col-md-6">
-                          <div>
-                            <div className="kb-data-box">
-                              <form onSubmit={FileUploadSubmit}>
-                                <div className="kb-file-upload">
-                                  <div className="file-upload-box rounded quicksand bg-dull-secondary-gray">
-                                    <input
-                                      type="file"
-                                      id="fileupload"
-                                      className="file-upload-input"
-                                      onChange={InputChange}
-                                    />
-                                    <span className="quicksand text-secondary-dark text-normal">
-                                      Drag and drop or{" "}
-                                      <span className="quicksand text-dark underline">
-                                        Choose your file
-                                      </span>
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="kb-attach-box mb-3">
-                                  <div className="file-atc-box">
-                                    <div className="border-dull-gray w-full px-3 py-2 rounded flex items-center gap-2">
-                                      <Image
-                                        src={EmailIcon}
-                                        className="rounded"
-                                        style={{
-                                          width: "2.3rem",
-                                          height: "2.3rem",
-                                          objectFit: "cover",
-                                        }}
-                                        alt=""
+                  <article className="w-1/2">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Resume Upload
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
+                      </div>
+
+                      <div className="fileupload-view">
+                        <div className="row justify-content-center m-0">
+                          <div className="col-md-6">
+                            <div>
+                              <div className="kb-data-box">
+                                <form onSubmit={FileUploadSubmit}>
+                                  <div className="kb-file-upload">
+                                    <div className="file-upload-box rounded quicksand bg-dull-secondary-gray">
+                                      <input
+                                        type="file"
+                                        id="fileupload"
+                                        className="file-upload-input"
+                                        onChange={InputChange}
                                       />
-                                      <div>
-                                        <h6 className="quicksand text-sm font-bold text-semi-dark capitalize m-0">
-                                          {selectedfile.filename}
-                                        </h6>
-                                        <p style={{ marginTop: "-.3rem" }}>
-                                          <span className="text-secondary-dark text-xs">
-                                            Size : {selectedfile.filesize}
-                                          </span>
-                                        </p>
+                                      <span className="quicksand text-secondary-dark text-normal">
+                                        Drag and drop or{" "}
+                                        <span className="quicksand text-dark underline">
+                                          Choose your file
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="kb-attach-box mb-3">
+                                    <div className="file-atc-box">
+                                      <div className="border-dull-gray w-full px-3 py-2 rounded flex items-center gap-2">
+                                        <Image
+                                          src={EmailIcon}
+                                          className="rounded"
+                                          style={{
+                                            width: "2.3rem",
+                                            height: "2.3rem",
+                                            objectFit: "cover",
+                                          }}
+                                          alt=""
+                                        />
+                                        <div>
+                                          <h6 className="quicksand text-sm font-bold text-semi-dark capitalize m-0">
+                                            {selectedfile.filename}
+                                          </h6>
+                                          <p style={{ marginTop: "-.3rem" }}>
+                                            <span className="text-secondary-dark text-xs">
+                                              Size : {selectedfile.filesize}
+                                            </span>
+                                          </p>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              </form>
+                                </form>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <br />
+                    <br />
 
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        Technology Tools
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Technology Tools
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
+                      </div>
 
-                      <button>
-                        <AddIcon />
-                      </button>
+                      <div className="mt-5">
+                        <div>
+                          <div className="kb-file-upload">
+                            <div className="file-upload-box rounded quicksand bg-dull-secondary-gray">
+                              <input
+                                type="file"
+                                id="upload_imgs"
+                                className="file-upload-input"
+                                onChange={handleImgUpload}
+                                multiple
+                              />
+                              <span className="quicksand text-secondary-dark text-normal">
+                                Drag and drop or{" "}
+                                <span className="quicksand text-dark underline">
+                                  Choose your files
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+
+                          <form id="img-upload-form">
+                            <ul className="grid grid-cols-6 gap-3">
+                              {images.map((image, index) => (
+                                <div key={index} className="relative">
+                                  <button
+                                    className="absolute top-0 right-0 bg-white border-none p-1 rounded-full text-gray-600 hover:text-red-500 focus:outline-none"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleRemoveImage(index);
+                                    }}
+                                  >
+                                    <CloseIcon />
+                                  </button>
+
+                                  <Image
+                                    src={image.src}
+                                    alt={`Preview ${index}`}
+                                    className="rounded border-dull-gray p-2"
+                                    style={{
+                                      width: "8rem",
+                                      objectFit: "cover",
+                                    }}
+                                    width={150}
+                                    height={150}
+                                  />
+                                </div>
+                              ))}
+                            </ul>
+                          </form>
+                        </div>
+                      </div>
+
+                      <ul className="grid grid-cols-6 gap-3 mt-4">
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={Bootstrap}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={CSS}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={ExpressJs}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={FastAPI}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={HTML}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={Javascript}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={JQuery}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={Laravel}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={MySQL}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={PHP}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={ReactJS}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={SequelizeJS}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={SocketIO}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                        <li
+                          className="box-shadow-dull rounded"
+                          style={{ height: "4.2rem" }}
+                        >
+                          <Image
+                            src={Tailwind}
+                            alt=""
+                            style={{ height: "4.2rem" }}
+                            className="w-full p-3 cover object-contain rounded"
+                          />
+                        </li>
+                      </ul>
                     </div>
+                  </article>
+                </div>
 
-                    <ul className="grid grid-cols-6 gap-3 mt-4">
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={Bootstrap}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={CSS}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={ExpressJs}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={FastAPI}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={MySQL}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={Javascript}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={JQuery}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={Laravel}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={MySQL}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={PHP}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={ReactJS}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={SequelizeJS}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={SocketIO}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                      <li
-                        className="box-shadow-dull rounded"
-                        style={{ height: "4.2rem" }}
-                      >
-                        <Image
-                          src={Tailwind}
-                          alt=""
-                          style={{ height: "4.2rem" }}
-                          className="w-full p-3 cover object-contain rounded"
-                        />
-                      </li>
-                    </ul>
-                  </div>
-                </article>
+                <br />
+                <br />
+                <br />
+                <div className="flex items-center justify-end w-full">
+                  <button
+                    className={`w-1/6 py-2 rounded bg-primary text-white`}
+                    onClick={(e) => updateUserImage(e, 1)}
+                  >
+                    Update
+                  </button>
+                </div>
               </div>
             )}
 
@@ -734,19 +948,34 @@ const PortfolioDetails = () => {
                         <span className="text-primary font-bold"> *</span>
                       </p>
 
-                      <button>
+                      <button onClick={addProjectTechUsed}>
                         <AddIcon />
                       </button>
                     </div>
 
-                    <ul className="grid grid-cols-1">
-                      <li className="w-full">
+                    {projectTechsUsedArr.map((item, index) => (
+                      <div
+                        className="relative w-full flex items-center justify-between"
+                        key={index}
+                      >
                         <input
                           type="text"
                           className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                          placeholder="Tool..."
+                          placeholder="Tool"
+                          value={item}
+                          onChange={(e) => handleProjectTechUsed(e, index)}
                         />
-                      </li>
+
+                        <button
+                          className="absolute right-2 top-2"
+                          onClick={() => removeProjectTechUsed(index)}
+                        >
+                          <CloseIcon />
+                        </button>
+                      </div>
+                    ))}
+
+                    <ul className="grid grid-cols-1">
                       <li className="w-full">
                         <input
                           type="text"
@@ -827,9 +1056,16 @@ const PortfolioDetails = () => {
                   } w-1/2 border-dull-gray-right pr-5`}
                 >
                   <br />
-                  <h2 className="text-xl text-primary font-bold quicksand border-dull-gray-bottom pb-2">
-                    Add a Project
-                  </h2>
+                  <div className="border-dull-gray-bottom pb-2 flex items-center justify-between">
+                    <h2 className="text-xl text-primary font-bold quicksand">
+                      Edit a Project
+                    </h2>
+
+                    <button onClick={() => setOnEditMode(false)}>
+                      <CloseIcon />
+                    </button>
+                  </div>
+
                   <div className="mt-5">
                     <div className="flex items-center justify-between">
                       <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
@@ -1050,7 +1286,7 @@ const PortfolioDetails = () => {
                       className={`w-1/3 py-2 rounded bg-primary text-white`}
                       onClick={(e) => updateUserImage(e, 1)}
                     >
-                      Add Project
+                      Update Project
                     </button>
                   </div>
                 </article>
@@ -1360,9 +1596,18 @@ const PortfolioDetails = () => {
               <div className="flex gap-5">
                 <article className="w-1/2 border-dull-gray-right pr-5">
                   <br />
-                  <h2 className="text-xl text-primary font-bold quicksand border-dull-gray-bottom pb-2">
-                    Add a Qualification
-                  </h2>
+                  <div className="border-dull-gray-bottom pb-2 flex items-center justify-between">
+                    <h2 className="text-xl text-primary font-bold quicksand">
+                      {onEditMode ? "Edit" : "Add"} a Qualification
+                    </h2>
+
+                    <button
+                      className={!onEditMode && "hidden"}
+                      onClick={() => setOnEditMode(false)}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
                   <div className="mt-5">
                     <div className="flex items-center justify-between">
                       <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
@@ -1427,7 +1672,7 @@ const PortfolioDetails = () => {
                   <br />
 
                   {/* experience sub category */}
-                  {experience && onEditMode ? (
+                  {experience && onEditMode && (
                     <div>
                       <div className="mt-5">
                         <div className="flex items-center justify-between">
@@ -1521,110 +1766,109 @@ const PortfolioDetails = () => {
                           className={`w-1/3 py-2 rounded bg-primary text-white`}
                           onClick={(e) => updateUserImage(e, 1)}
                         >
+                          Update Experience
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {experience && !onEditMode && (
+                    <div>
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Job Title
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Job Description
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+                        <textarea
+                          name=""
+                          id=""
+                          rows="5"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        ></textarea>
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Company Name
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Job Started
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="date"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Job Ended
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="date"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <br />
+                      <div className="flex items-center justify-end w-full">
+                        <button
+                          className={`w-1/3 py-2 rounded bg-primary text-white`}
+                          onClick={(e) => updateUserImage(e, 1)}
+                        >
                           Add Experience
                         </button>
                       </div>
                     </div>
-                  ) : (
-                    experience &&
-                    !onEditMode && (
-                      <div>
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Job Title
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Job Description
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-                          <textarea
-                            name=""
-                            id=""
-                            rows="5"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          ></textarea>
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Company Name
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Job Started
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="date"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Job Ended
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="date"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <br />
-                        <div className="flex items-center justify-end w-full">
-                          <button
-                            className={`w-1/3 py-2 rounded bg-primary text-white`}
-                            onClick={(e) => updateUserImage(e, 1)}
-                          >
-                            Add Experience
-                          </button>
-                        </div>
-                      </div>
-                    )
                   )}
 
                   {/* education sub category */}
-                  {education && onEditMode ? (
+                  {education && onEditMode && (
                     <div>
                       <div className="mt-5">
                         <div className="flex items-center justify-between">
@@ -1704,85 +1948,84 @@ const PortfolioDetails = () => {
                         </button>
                       </div>
                     </div>
-                  ) : (
-                    education &&
-                    !onEditMode && (
-                      <div>
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              School Name
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
+                  )}
 
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
+                  {education && !onEditMode && (
+                    <div>
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            School Name
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
                         </div>
 
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              Program Taken (Only for college)
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              School Started
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="date"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <div className="mt-5">
-                          <div className="flex items-center justify-between">
-                            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                              School Ended
-                              <span className="text-primary font-bold"> *</span>
-                            </p>
-                          </div>
-
-                          <input
-                            type="date"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                          />
-                        </div>
-
-                        <br />
-                        <br />
-                        <div className="flex items-center justify-end w-full">
-                          <button
-                            className={`w-1/3 py-2 rounded bg-primary text-white`}
-                            onClick={(e) => updateUserImage(e, 1)}
-                          >
-                            Add Education
-                          </button>
-                        </div>
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
                       </div>
-                    )
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Program Taken (Only for college)
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            School Started
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="date"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            School Ended
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="date"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <br />
+                      <div className="flex items-center justify-end w-full">
+                        <button
+                          className={`w-1/3 py-2 rounded bg-primary text-white`}
+                          onClick={(e) => updateUserImage(e, 1)}
+                        >
+                          Add Education
+                        </button>
+                      </div>
+                    </div>
                   )}
 
                   {/* credentials sub category */}
@@ -1807,7 +2050,7 @@ const PortfolioDetails = () => {
                             <span className="quicksand text-secondary-dark text-normal">
                               Drag and drop or{" "}
                               <span className="quicksand text-dark underline">
-                                Choose your file
+                                Choose your files
                               </span>
                             </span>
                           </div>
@@ -1815,21 +2058,30 @@ const PortfolioDetails = () => {
 
                         <form id="img-upload-form">
                           <ul className="grid grid-cols-2 gap-3">
-                            {previewTitle}
                             {images.map((image, index) => (
-                              <Image
-                                key={index}
-                                src={image}
-                                alt={`Preview ${index}`}
-                                className="rounded border-dull-gray p-2"
-                                style={{
-                                  width: "15rem",
-                                  // height: "8rem",
-                                  objectFit: "cover",
-                                }}
-                                width={150} // Specify the width of the image
-                                height={150} // Specify the height of the image
-                              />
+                              <div key={index} className="relative">
+                                <button
+                                  className="absolute top-0 right-0 bg-white border-none p-1 rounded-full text-gray-600 hover:text-red-500 focus:outline-none"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleRemoveImage(index);
+                                  }}
+                                >
+                                  <CloseIcon />
+                                </button>
+
+                                <Image
+                                  src={image.src}
+                                  alt={`Preview ${index}`}
+                                  className="rounded border-dull-gray p-2"
+                                  style={{
+                                    width: "15rem",
+                                    objectFit: "cover",
+                                  }}
+                                  width={150}
+                                  height={150}
+                                />
+                              </div>
                             ))}
                           </ul>
                         </form>
@@ -2171,7 +2423,18 @@ const PortfolioDetails = () => {
                   >
                     <ul className="grid grid-cols-2 gap-5 w-full">
                       <li className="rounded flex items-center w-full">
-                        <div className="w-full flex items-center justify-center">
+                        <div className="w-full flex flex-col items-end justify-center">
+                          <div className="flex items-center gap-2 text-semi-dark text-sm mb-2">
+                            <button
+                              className="text-primary-dark"
+                              onClick={() => setOnEditMode(true)}
+                            >
+                              <BorderColorIcon fontSize="small" />
+                            </button>
+                            <button className="pt-1 text-red">
+                              <DeleteSweepIcon />
+                            </button>
+                          </div>
                           <Image
                             src={MySQL}
                             alt=""
@@ -2259,118 +2522,245 @@ const PortfolioDetails = () => {
               <div className="flex gap-5">
                 <article className="w-1/2 border-dull-gray-right pr-5">
                   <br />
-                  <h2 className="text-xl text-primary font-bold quicksand border-dull-gray-bottom pb-2">
-                    Add a Service
-                  </h2>
+                  <div className="border-dull-gray-bottom pb-2 flex items-center justify-between">
+                    <h2 className="text-xl text-primary font-bold quicksand">
+                      {onEditMode ? "Edit" : "Add"} a Service
+                    </h2>
 
-                  <br />
-                  <div className="mt-5">
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        Service Name
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
-                    </div>
-
-                    <input
-                      type="text"
-                      className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                      placeholder="Type here..."
-                      value={"Website/Web Application"}
-                    />
-                  </div>
-
-                  <br />
-                  <div className="mt-5">
-                    <div className="flex items-center justify-between">
-                      <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                        Service Description
-                        <span className="text-primary font-bold"> *</span>
-                      </p>
-                    </div>
-                    <textarea
-                      name=""
-                      id=""
-                      rows="5"
-                      className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                      placeholder="Type here..."
-                    >
-                      Crafting dynamic websites and web applications to make
-                      your online presence shine. From concept to execution, I
-                      bring vision to life with personalized seamless
-                      functionality.
-                    </textarea>
-                  </div>
-
-                  <br />
-
-                  <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                      Service Icon
-                      <span className="text-primary font-bold"> *</span>
-                    </p>
-                  </div>
-                  <form className={`flex items-center gap-5 mt-1`}>
-                    <div
-                      className="p-2 rounded"
-                      {...getRootProps()}
-                      style={{
-                        width: "6rem",
-                        cursor: "pointer",
-                        border: "3px dashed #888",
-                      }}
-                    >
-                      <input {...getInputProps()} name="image" type="file" />
-                      {acceptedFiles.length === 0 ? (
-                        <Image
-                          src={MySQL}
-                          className="rounded"
-                          style={{
-                            width: "5rem",
-                            height: "5rem",
-                            objectFit: "cover",
-                          }}
-                          alt=""
-                        />
-                      ) : (
-                        <>
-                          <Image
-                            src={URL.createObjectURL(acceptedFiles[0])}
-                            className="rounded"
-                            style={{
-                              width: "5rem",
-                              height: "5rem",
-                              objectFit: "cover",
-                            }}
-                            alt=""
-                            width={150} // Specify the width of the image
-                            height={150} // Specify the height of the image
-                          />
-                        </>
-                      )}
-                    </div>
-
-                    <div className={`text-start`}>
-                      <p className="text-2xl mb-1 font-medium mcolor-800">
-                        Upload an icon
-                      </p>
-                      <p className="text-sm opacity-70 mb-4">
-                        Drag and drop an image to the photo or click to select
-                        one.
-                      </p>
-                    </div>
-                  </form>
-
-                  <br />
-                  <br />
-                  <div className="flex items-center justify-end w-full">
                     <button
-                      className={`w-1/3 py-2 rounded bg-primary text-white`}
-                      onClick={(e) => updateUserImage(e, 1)}
+                      className={!onEditMode && "hidden"}
+                      onClick={() => setOnEditMode(false)}
                     >
-                      Add Service
+                      <CloseIcon />
                     </button>
                   </div>
+
+                  <br />
+                  {servicesCategory && onEditMode && (
+                    <div>
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Service Name
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                          value={"Website/Web Application"}
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Service Description
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+                        <textarea
+                          name=""
+                          id=""
+                          rows="5"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        >
+                          Crafting dynamic websites and web applications to make
+                          your online presence shine. From concept to execution,
+                          I bring vision to life with personalized seamless
+                          functionality.
+                        </textarea>
+                      </div>
+
+                      <br />
+
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Service Icon
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
+                      </div>
+                      <form className={`flex items-center gap-5 mt-1`}>
+                        <div
+                          className="p-2 rounded"
+                          {...getRootProps()}
+                          style={{
+                            width: "6rem",
+                            cursor: "pointer",
+                            border: "3px dashed #888",
+                          }}
+                        >
+                          <input
+                            {...getInputProps()}
+                            name="image"
+                            type="file"
+                          />
+                          {acceptedFiles.length === 0 ? (
+                            <Image
+                              src={MySQL}
+                              className="rounded"
+                              style={{
+                                width: "5rem",
+                                height: "5rem",
+                                objectFit: "cover",
+                              }}
+                              alt=""
+                            />
+                          ) : (
+                            <>
+                              <Image
+                                src={URL.createObjectURL(acceptedFiles[0])}
+                                className="rounded"
+                                style={{
+                                  width: "5rem",
+                                  height: "5rem",
+                                  objectFit: "cover",
+                                }}
+                                alt=""
+                                width={150} // Specify the width of the image
+                                height={150} // Specify the height of the image
+                              />
+                            </>
+                          )}
+                        </div>
+
+                        <div className={`text-start`}>
+                          <p className="text-2xl mb-1 font-medium mcolor-800">
+                            Upload an icon
+                          </p>
+                          <p className="text-sm opacity-70 mb-4">
+                            Drag and drop an image to the photo or click to
+                            select one.
+                          </p>
+                        </div>
+                      </form>
+
+                      <br />
+                      <br />
+                      <div className="flex items-center justify-end w-full">
+                        <button
+                          className={`w-1/3 py-2 rounded bg-primary text-white`}
+                          onClick={(e) => updateUserImage(e, 1)}
+                        >
+                          Update Service
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {servicesCategory && !onEditMode && (
+                    <div>
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Service Name
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+
+                        <input
+                          type="text"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        />
+                      </div>
+
+                      <br />
+                      <div className="mt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                            Service Description
+                            <span className="text-primary font-bold"> *</span>
+                          </p>
+                        </div>
+                        <textarea
+                          name=""
+                          id=""
+                          rows="5"
+                          className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                          placeholder="Type here..."
+                        ></textarea>
+                      </div>
+
+                      <br />
+
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Service Icon
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
+                      </div>
+                      <form className={`flex items-center gap-5 mt-1`}>
+                        <div
+                          className="p-2 rounded"
+                          {...getRootProps()}
+                          style={{
+                            width: "6rem",
+                            cursor: "pointer",
+                            border: "3px dashed #888",
+                          }}
+                        >
+                          <input
+                            {...getInputProps()}
+                            name="image"
+                            type="file"
+                          />
+                          {acceptedFiles.length === 0 ? (
+                            <Image
+                              src={MySQL}
+                              className="rounded"
+                              style={{
+                                width: "5rem",
+                                height: "5rem",
+                                objectFit: "cover",
+                              }}
+                              alt=""
+                            />
+                          ) : (
+                            <>
+                              <Image
+                                src={URL.createObjectURL(acceptedFiles[0])}
+                                className="rounded"
+                                style={{
+                                  width: "5rem",
+                                  height: "5rem",
+                                  objectFit: "cover",
+                                }}
+                                alt=""
+                                width={150} // Specify the width of the image
+                                height={150} // Specify the height of the image
+                              />
+                            </>
+                          )}
+                        </div>
+
+                        <div className={`text-start`}>
+                          <p className="text-2xl mb-1 font-medium mcolor-800">
+                            Upload an icon
+                          </p>
+                          <p className="text-sm opacity-70 mb-4">
+                            Drag and drop an image to the photo or click to
+                            select one.
+                          </p>
+                        </div>
+                      </form>
+
+                      <br />
+                      <br />
+                      <div className="flex items-center justify-end w-full">
+                        <button
+                          className={`w-1/3 py-2 rounded bg-primary text-white`}
+                          onClick={(e) => updateUserImage(e, 1)}
+                        >
+                          Add Service
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </article>
 
                 <article className="w-1/2">

@@ -7,10 +7,12 @@ import { useDropzone } from "react-dropzone";
 // icon imports
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import { useState } from "react";
 
 const AdminProfile = () => {
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
@@ -18,6 +20,57 @@ const AdminProfile = () => {
       setImage(acceptedFiles[0]);
     },
   });
+
+  const [headlineArr, setHeadlineArr] = useState([]);
+  const [headlineHighlightsArr, setHheadlineHighlightsArr] = useState([]);
+
+  // functions for adding profile inputs
+  const addHeadlineArr = (e) => {
+    e.preventDefault();
+    if (headlineArr.length === 0 || headlineArr.every((item) => item !== "")) {
+      setHeadlineArr([...headlineArr, ""]);
+    }
+  };
+
+  const handleHeadlineArr = (e, index) => {
+    e.preventDefault();
+    const newArr = [...headlineArr];
+    newArr[index] = e.target.value;
+    setHeadlineArr(newArr);
+  };
+
+  const removeHeadlineArr = (e, indexToRemove) => {
+    e.preventDefault();
+    setHeadlineArr((prevArr) =>
+      prevArr.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  // functions for adding profile highlights
+  const addHeadlineHighlightsArr = (e) => {
+    e.preventDefault();
+
+    if (
+      headlineHighlightsArr.length === 0 ||
+      headlineHighlightsArr.every((item) => item !== "")
+    ) {
+      setHheadlineHighlightsArr([...headlineHighlightsArr, ""]);
+    }
+  };
+
+  const handleHeadlineHighlightsArr = (e, index) => {
+    e.preventDefault();
+    const newArr = [...headlineHighlightsArr];
+    newArr[index] = e.target.value;
+    setHheadlineHighlightsArr(newArr);
+  };
+
+  const removeHeadlineHighlightsArr = (e, indexToRemove) => {
+    e.preventDefault();
+    setHheadlineHighlightsArr((prevArr) =>
+      prevArr.filter((_, index) => index !== indexToRemove)
+    );
+  };
 
   return (
     <main className="main-bg-linear text-dark ">
@@ -121,12 +174,37 @@ const AdminProfile = () => {
                       <span className="text-primary font-bold"> *</span>
                     </p>
 
-                    <button>
+                    <button onClick={addHeadlineArr}>
                       <AddIcon />
                     </button>
                   </div>
 
-                  <ul className="grid grid-cols-1 gap-2">
+                  {headlineArr.map((item, index) => (
+                    <div
+                      className="relative w-full flex items-center justify-between"
+                      key={index}
+                    >
+                      <input
+                        type="text"
+                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                        placeholder="Type here..."
+                        value={item}
+                        onChange={(e) => handleHeadlineArr(e, index)}
+                      />
+
+                      <button
+                        className="absolute right-2 top-2"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeHeadlineArr(e, index);
+                        }}
+                      >
+                        <CloseIcon />
+                      </button>
+                    </div>
+                  ))}
+
+                  <ul className="grid grid-cols-1 gap-2 mt-3">
                     <li className="w-full">
                       <input
                         type="text"
@@ -158,10 +236,35 @@ const AdminProfile = () => {
                       <span className="text-primary font-bold"> *</span>
                     </p>
 
-                    <button>
+                    <button onClick={addHeadlineHighlightsArr}>
                       <AddIcon />
                     </button>
                   </div>
+
+                  {headlineHighlightsArr.map((item, index) => (
+                    <div
+                      className="relative w-full flex items-center justify-between"
+                      key={index}
+                    >
+                      <input
+                        type="text"
+                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                        placeholder="Type here..."
+                        value={item}
+                        onChange={(e) => handleHeadlineHighlightsArr(e, index)}
+                      />
+
+                      <button
+                        className="absolute right-2 top-2"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeHeadlineHighlightsArr(e, index);
+                        }}
+                      >
+                        <CloseIcon />
+                      </button>
+                    </div>
+                  ))}
 
                   <ul className="grid grid-cols-1">
                     <li className="w-full">
