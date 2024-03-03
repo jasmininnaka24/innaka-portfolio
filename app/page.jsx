@@ -18,6 +18,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 // photo imports
 import Photo from "../public/profile.jpg";
+import MindScape from "../public/mindscape.png";
 import Bootstrap from "../public/skillset/bootstrap.png";
 import CSS from "../public/skillset/css.png";
 import ExpressJs from "../public/skillset/express.png";
@@ -92,7 +93,7 @@ const Home = () => {
           OpenInNewIcon={OpenInNewIcon}
           GitHubIcon={GitHubIcon}
           Image={Image}
-          Photo={Photo}
+          MindScape={MindScape}
           Link={Link}
         />
         {/* qualifications section */}

@@ -1,4 +1,10 @@
-const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
+const ProjectSection = ({
+  OpenInNewIcon,
+  GitHubIcon,
+  Image,
+  MindScape,
+  Link,
+}) => {
   return (
     <section
       id="projects"
@@ -149,7 +155,7 @@ const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
 
                 <div className="w-1/3 flex items-center justify-end">
                   <Image
-                    src={Photo}
+                    src={MindScape}
                     alt=""
                     style={{ width: "12.5rem", height: "12.5rem" }}
                     className="w-full main-photo rounded-[.3rem]"
