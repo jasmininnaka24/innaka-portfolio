@@ -18,7 +18,7 @@ const ProjectSection = ({ OpenInNewIcon, GitHubIcon, Image, Photo, Link }) => {
               ></div>
             </div>
           </div>
-          <ul class="flex items-center text-center gap-4">
+          <ul class=" items-center text-center gap-4 hidden">
             <li>
               <Link
                 className="text-center font-bold px-2 quicksand text-dark text-sm"

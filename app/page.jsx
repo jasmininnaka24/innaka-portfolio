@@ -17,7 +17,7 @@ import NorthEastIcon from "@mui/icons-material/NorthEast";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 // photo imports
-import Photo from "../public/aboutphoto.png";
+import Photo from "../public/profile.jpg";
 import Bootstrap from "../public/skillset/bootstrap.png";
 import CSS from "../public/skillset/css.png";
 import ExpressJs from "../public/skillset/express.png";
@@ -84,6 +84,8 @@ const Home = () => {
           SequelizeJS={SequelizeJS}
           SocketIO={SocketIO}
           Tailwind={Tailwind}
+          Link={Link}
+          OpenInNewIcon={OpenInNewIcon}
         />
         {/* projects section */}
         <ProjectSection

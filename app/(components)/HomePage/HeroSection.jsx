@@ -15,19 +15,19 @@ const HeroSection = ({
       style={{ minHeight: "30rem" }}
       className={`py-10 mt-12 gap-8 rounded flex flex-row-reverse items-center justify-center`}
     >
-      <article className="w-3/4 flex flex-row-reverse items-center justify-center gap-5">
-        <div className="w-1/3 flex items-center justify-start">
+      <article className="w-full flex flex-row-reverse items-center justify-center gap-5">
+        <div className="w-1/3 flex items-center justify-center">
           <Image
             src={Photo}
             alt=""
-            style={{ width: "20rem", height: "20rem" }}
+            style={{ width: "40rem", height: "20rem", objectFit: "cover" }}
             className="w-full main-photo rounded-[.3rem]"
           />
         </div>
-        <div className="flex-1">
+        <div className="  ">
           <h4 className="text-xl mt-2 text-secondary-dark mb-2">Hey there👋🏼</h4>
 
-          <div className="flex items-cente">
+          <div className="flex items-center">
             <div>
               <h4 className="font-bold text-5xl text-primary-dark ">
                 I am Jasmin In-naka
@@ -54,22 +54,34 @@ const HeroSection = ({
 
           <ul className="flex items-center gap-6 mt-10">
             <li>
-              <Link href={"/"}>
+              <Link
+                target={"_blank"}
+                href={"https://github.com/jasmininnaka24"}
+              >
                 <GitHubIcon className="text-secondary-dark" />
               </Link>
             </li>
             <li>
-              <Link href={"/"}>
+              <Link
+                target={"_blank"}
+                href={"https://www.linkedin.com/in/jasmin-in-naka/"}
+              >
                 <LinkedInIcon className="text-secondary-dark" />
               </Link>
             </li>
             <li>
-              <Link href={"/"}>
+              <Link
+                target={"_blank"}
+                href={"https://www.facebook.com/jasmin.innaka"}
+              >
                 <FacebookRoundedIcon className="text-secondary-dark" />
               </Link>
             </li>
             <li>
-              <Link href={"/"}>
+              <Link
+                target={"_blank"}
+                href={"https://www.instagram.com/innk_jsmn/?hl=en"}
+              >
                 <InstagramIcon className="text-secondary-dark" />
               </Link>
             </li>

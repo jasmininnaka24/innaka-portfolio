@@ -14,6 +14,8 @@ const AboutSection = ({
   SequelizeJS,
   SocketIO,
   Tailwind,
+  Link,
+  OpenInNewIcon,
 }) => {
   return (
     <section
@@ -60,12 +62,16 @@ const AboutSection = ({
           <br />
 
           <div className="flex items-center gap-2 mt-5">
-            <button className="w-1/3 py-2 bg-primary text-light rounded quicksand">
-              View Resume
-            </button>
-            <button className="w-1/3 py-2 outlined-primary rounded quicksand">
+            <Link
+              href="https://jasmininnaka-resume.tiiny.site"
+              className="text-center w-1/3 py-2 bg-primary text-light rounded quicksand"
+              target="_blank"
+            >
+              View Resume <OpenInNewIcon />
+            </Link>
+            {/* <button className="w-1/3 py-2 outlined-primary rounded quicksand">
               Download Resume
-            </button>
+            </button> */}
           </div>
         </article>
 

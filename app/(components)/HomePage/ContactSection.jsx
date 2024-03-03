@@ -14,7 +14,7 @@ const ContactSection = ({
       className={`py-32 flex items-center justify-center`}
     >
       <div className="flex gap-11 items-center justify-center">
-        <article className="w-1/2 relative">
+        <article className="w-full relative">
           <div>
             <h4 className="font-bold text-4xl text-primary-dark quicksand ">
               Get in Touch
@@ -38,9 +38,9 @@ const ContactSection = ({
                 <EmailOutlinedIcon fontSize="medium" className="text-primary" />
               </div>
               <div>
-                <Link href={"/"} className="text-sm text-semi-dark quicksand">
+                <p href={"https"} className="text-sm text-semi-dark quicksand">
                   jasmininnaka@gmail.com
-                </Link>
+                </p>
               </div>
             </li>
             <li className="flex items-center gap-2 bg-secondary-light-dull px-3 py-3 rounded">
@@ -48,7 +48,11 @@ const ContactSection = ({
                 <LinkedInIcon fontSize="medium" className="text-primary" />
               </div>
               <div>
-                <Link href={"/"} className="text-sm text-semi-dark quicksand">
+                <Link
+                  target="_blank"
+                  href={"https://www.linkedin.com/in/jasmin-in-naka/"}
+                  className="text-sm text-semi-dark quicksand"
+                >
                   jasmin-in-naka
                 </Link>
               </div>
@@ -58,7 +62,11 @@ const ContactSection = ({
                 <GitHubIcon fontSize="medium" className="text-primary" />
               </div>
               <div>
-                <Link href={"/"} className="text-sm text-semi-dark quicksand">
+                <Link
+                  target="_blank"
+                  href={"https://github.com/jasmininnaka24"}
+                  className="text-sm text-semi-dark quicksand"
+                >
                   jasmininnaka24
                 </Link>
               </div>
@@ -68,8 +76,12 @@ const ContactSection = ({
                 <FacebookIcon fontSize="medium" className="text-primary" />
               </div>
               <div>
-                <Link href={"/"} className="text-sm text-semi-dark quicksand">
-                  jasmininnaka24
+                <Link
+                  target="_blank"
+                  href={"https://www.facebook.com/jasmin.innaka"}
+                  className="text-sm text-semi-dark quicksand"
+                >
+                  jasmin.innaka
                 </Link>
               </div>
             </li>
@@ -91,7 +103,7 @@ const ContactSection = ({
           </div>
         </article>
 
-        <article className="w-1/2 relative">
+        {/* <article className="w-1/2 relative">
           <div className="box-shadow-dull w-full p-5 rounded">
             <p className="text-xl text-primary-dark quicksand font-bold">
               Send me a message 🚀
@@ -137,7 +149,7 @@ const ContactSection = ({
               </div>
             </form>
           </div>
-        </article>
+        </article> */}
       </div>
     </section>
   );
