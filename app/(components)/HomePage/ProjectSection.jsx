@@ -157,7 +157,7 @@ const ProjectSection = ({
                   <Image
                     src={MindScape}
                     alt=""
-                    style={{ width: "12.5rem", height: "12.5rem" }}
+                    style={{ width: "15.5rem" }}
                     className="w-full main-photo rounded-[.3rem]"
                   />
                 </div>
