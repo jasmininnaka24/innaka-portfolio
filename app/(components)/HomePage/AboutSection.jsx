@@ -63,7 +63,7 @@ const AboutSection = ({
 
           <div className="flex items-center gap-2 mt-5">
             <Link
-              href="https://jasmininnaka-resume.tiiny.site"
+              href="https://green-kym-42.tiiny.site"
               className="text-center w-1/3 py-2 bg-primary text-light rounded quicksand"
               target="_blank"
             >
