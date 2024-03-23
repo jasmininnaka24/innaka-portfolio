@@ -34,7 +34,7 @@ const QualificationSection = ({ Link }) => {
           </li>
           <li>
             <Link
-              className="hidden text-center px-2 quicksand text-secondary-dark text-sm"
+              className="text-center px-2 quicksand text-secondary-dark text-sm"
               href={"#projects"}
             >
               Education
@@ -42,7 +42,7 @@ const QualificationSection = ({ Link }) => {
           </li>
           <li>
             <Link
-              className="hidden text-center px-2 quicksand text-secondary-dark text-sm"
+              className="text-center px-2 quicksand text-secondary-dark text-sm"
               href={"#projects"}
             >
               Credentials

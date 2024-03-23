@@ -49,6 +49,8 @@ import ServiceSection from "./(components)/HomePage/ServiceSection";
 import ContactSection from "./(components)/HomePage/ContactSection";
 import Footer from "./(components)/Footer";
 
+import { useEffect, useState } from "react";
+
 const Home = () => {
   return (
     <main className="main-bg-linear text-dark">

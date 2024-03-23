@@ -14,7 +14,7 @@ const ContactSection = ({
       className={`py-32 flex items-center justify-center`}
     >
       <div className="flex gap-11 items-center justify-center">
-        <article className="w-full relative">
+        <article className="w-1/2 relative">
           <div>
             <h4 className="font-bold text-4xl text-primary-dark quicksand ">
               Get in Touch
@@ -103,7 +103,7 @@ const ContactSection = ({
           </div>
         </article>
 
-        {/* <article className="w-1/2 relative">
+        <article className="w-1/2 relative">
           <div className="box-shadow-dull w-full p-5 rounded">
             <p className="text-xl text-primary-dark quicksand font-bold">
               Send me a message 🚀
@@ -149,7 +149,7 @@ const ContactSection = ({
               </div>
             </form>
           </div>
-        </article> */}
+        </article>
       </div>
     </section>
   );

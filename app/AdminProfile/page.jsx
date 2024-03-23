@@ -2,75 +2,122 @@
 import Image from "next/image";
 import Link from "next/link";
 import Photo from "../../public/aboutphoto.png";
-import { useDropzone } from "react-dropzone";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // icon imports
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import CheckIcon from "@mui/icons-material/Check";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import { useState } from "react";
+
+// function imports
+import AdminProfileFunction from "../(functions)/AdminProfileFunction";
 
 const AdminProfile = () => {
-  const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setImage(acceptedFiles[0]);
+  const router = useRouter();
+
+  const {
+    functions: {
+      addHeadlineArr,
+      handleHeadlineArr,
+      removeHeadlineArr,
+      updateHeadline,
+      addHeadlineHighlightsArr,
+      handleHeadlineHighlightsArr,
+      updateHeadlineHighlightsArr,
+      removeHeadlineHighlightsArr,
     },
-  });
+    stateFunctions: {
+      getRootProps,
+      getInputProps,
+      setHheadlineHighlightsArr,
+      setHeadlineArr,
+    },
+    stateVariables: { acceptedFiles, headlineArr, headlineHighlightsArr },
+  } = AdminProfileFunction();
 
-  const [headlineArr, setHeadlineArr] = useState([]);
-  const [headlineHighlightsArr, setHheadlineHighlightsArr] = useState([]);
+  // starting data
+  const startingData = {
+    fullname: "",
+    email: "",
+  };
 
-  // functions for adding profile inputs
-  const addHeadlineArr = (e) => {
+  // States
+  const [personalDetailsData, setPersonalDetailsData] = useState(startingData);
+  const [updateBtn, setUpdateBtn] = useState(false);
+
+  const handleChangeForPersonalDetails = (e) => {
+    const { name, value } = e.target;
+    setPersonalDetailsData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const savePersonalDetailsData = async (e) => {
     e.preventDefault();
-    if (headlineArr.length === 0 || headlineArr.every((item) => item !== "")) {
-      setHeadlineArr([...headlineArr, ""]);
+    const data = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fullname: personalDetailsData?.fullname,
+        email: personalDetailsData?.email,
+      }),
+    };
+
+    const res = await fetch(`/api/personalDetailsApi`, data);
+    console.log(data);
+
+    getPersonalDetailsData();
+  };
+
+  const updatePersonalDetailsData = async (e) => {
+    e.preventDefault();
+    const data = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: personalDetailsData?.id,
+        fullname: personalDetailsData?.fullname,
+        email: personalDetailsData?.email,
+      }),
+    };
+
+    const res = await fetch(`/api/personalDetailsApi`, data);
+    console.log(data);
+
+    getPersonalDetailsData();
+  };
+
+  const getPersonalDetailsData = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await fetch(`/api/personalDetailsApi`, data);
+    const response = await res.json();
+    setPersonalDetailsData(response?.data[0]);
+
+    if (response?.data[0]?.fullname !== "") {
+      setUpdateBtn(true);
     }
   };
 
-  const handleHeadlineArr = (e, index) => {
-    e.preventDefault();
-    const newArr = [...headlineArr];
-    newArr[index] = e.target.value;
-    setHeadlineArr(newArr);
-  };
-
-  const removeHeadlineArr = (e, indexToRemove) => {
-    e.preventDefault();
-    setHeadlineArr((prevArr) =>
-      prevArr.filter((_, index) => index !== indexToRemove)
-    );
-  };
-
-  // functions for adding profile highlights
-  const addHeadlineHighlightsArr = (e) => {
-    e.preventDefault();
-
-    if (
-      headlineHighlightsArr.length === 0 ||
-      headlineHighlightsArr.every((item) => item !== "")
-    ) {
-      setHheadlineHighlightsArr([...headlineHighlightsArr, ""]);
-    }
-  };
-
-  const handleHeadlineHighlightsArr = (e, index) => {
-    e.preventDefault();
-    const newArr = [...headlineHighlightsArr];
-    newArr[index] = e.target.value;
-    setHheadlineHighlightsArr(newArr);
-  };
-
-  const removeHeadlineHighlightsArr = (e, indexToRemove) => {
-    e.preventDefault();
-    setHheadlineHighlightsArr((prevArr) =>
-      prevArr.filter((_, index) => index !== indexToRemove)
-    );
-  };
+  useEffect(() => {
+    getPersonalDetailsData();
+  }, []);
 
   return (
     <main className="main-bg-linear text-dark ">
@@ -129,16 +176,6 @@ const AdminProfile = () => {
             style={{ borderTop: "solid 1px #efeded" }}
           >
             <article className="w-2/3">
-              {/* <h2 className="text-primary font-bold text-3xl quicksand">
-                Hero Section Information:{" "}
-              </h2>
-              <div
-                className="bg-primary-dark rounded mt-1"
-                style={{ height: "3px", width: "4rem" }}
-              ></div>
-
-              <br /> */}
-
               <form action="" className="w-full mt-5">
                 <div className="flex items-center justify-center gap-3 mt-4">
                   <div className="w-full">
@@ -149,8 +186,10 @@ const AdminProfile = () => {
                     <input
                       type="text"
                       className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                      name="fullname"
+                      value={personalDetailsData?.fullname || ""}
+                      onChange={handleChangeForPersonalDetails}
                       placeholder="Full Name"
-                      value={"Jasmin In-naka"}
                     />
                   </div>
                   <div className="w-full">
@@ -158,208 +197,211 @@ const AdminProfile = () => {
                       Email<span className="text-primary font-bold"> *</span>
                     </p>
                     <input
-                      type="email"
+                      type="text"
                       className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                      name="email"
+                      required={true}
+                      value={personalDetailsData?.email || ""}
+                      autoComplete="off"
+                      onChange={handleChangeForPersonalDetails}
                       placeholder="Email"
-                      value={"jasmininnaka@gmail.com"}
                     />
                   </div>
                 </div>
 
                 <br />
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                      Headlines
-                      <span className="text-primary font-bold"> *</span>
-                    </p>
 
-                    <button onClick={addHeadlineArr}>
-                      <AddIcon />
-                    </button>
-                  </div>
+                {updateBtn && (
+                  <div>
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Headlines
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
 
-                  {headlineArr.map((item, index) => (
-                    <div
-                      className="relative w-full flex items-center justify-between"
-                      key={index}
-                    >
-                      <input
-                        type="text"
-                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                        placeholder="Type here..."
-                        value={item}
-                        onChange={(e) => handleHeadlineArr(e, index)}
-                      />
+                        <button onClick={addHeadlineArr}>
+                          <AddIcon />
+                        </button>
+                      </div>
 
-                      <button
-                        className="absolute right-2 top-2"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeHeadlineArr(e, index);
-                        }}
-                      >
-                        <CloseIcon />
-                      </button>
+                      {headlineArr.map((item, index) => (
+                        <div
+                          className="relative w-full flex items-center justify-between"
+                          key={index}
+                        >
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full pl-3 pr-10 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={item}
+                            onChange={(e) => handleHeadlineArr(e, index)}
+                          />
+
+                          {/* <button
+                            className="absolute right-8 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateHeadline(e, index);
+                            }}
+                          >
+                            <CheckIcon />
+                          </button> */}
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeHeadlineArr(e, index);
+                            }}
+                          >
+                            <CloseIcon />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
 
-                  <ul className="grid grid-cols-1 gap-2 mt-3">
-                    <li className="w-full">
-                      <input
-                        type="text"
-                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                        placeholder="Full Name"
-                        value={
-                          "21-year old IT student who builds Software Applications."
-                        }
-                      />
-                    </li>
-                    <li className="w-full">
-                      <input
-                        type="text"
-                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                        placeholder="Full Name"
-                        value={
-                          "I embrace minimalism and simplicity, along with the elegance they unveil."
-                        }
-                      />
-                    </li>
-                  </ul>
-                </div>
+                    <br />
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Highlighted Word(s)
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
 
-                <br />
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                      Highlighted Word(s)
-                      <span className="text-primary font-bold"> *</span>
-                    </p>
+                        <button onClick={addHeadlineHighlightsArr}>
+                          <AddIcon />
+                        </button>
+                      </div>
 
-                    <button onClick={addHeadlineHighlightsArr}>
-                      <AddIcon />
-                    </button>
-                  </div>
-
-                  {headlineHighlightsArr.map((item, index) => (
-                    <div
-                      className="relative w-full flex items-center justify-between"
-                      key={index}
-                    >
-                      <input
-                        type="text"
-                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                        placeholder="Type here..."
-                        value={item}
-                        onChange={(e) => handleHeadlineHighlightsArr(e, index)}
-                      />
-
-                      <button
-                        className="absolute right-2 top-2"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeHeadlineHighlightsArr(e, index);
-                        }}
-                      >
-                        <CloseIcon />
-                      </button>
+                      {headlineHighlightsArr.map((item, index) => (
+                        <div
+                          className="relative w-full flex items-center justify-between"
+                          key={index}
+                        >
+                          <input
+                            type="text"
+                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full pl-3 pr-10 py-2 rounded outline-none"
+                            placeholder="Type here..."
+                            value={item}
+                            onChange={(e) =>
+                              handleHeadlineHighlightsArr(e, index)
+                            }
+                          />
+                          {/* <button
+                            className="absolute right-8 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateHeadlineHighlightsArr(e, index);
+                            }}
+                          >
+                            <CheckIcon />
+                          </button> */}
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeHeadlineHighlightsArr(e, index);
+                            }}
+                          >
+                            <CloseIcon />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
 
-                  <ul className="grid grid-cols-1">
-                    <li className="w-full">
-                      <input
-                        type="text"
-                        className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                        placeholder="Full Name"
-                        value={"Software Applications"}
-                      />
-                    </li>
-                  </ul>
-                </div>
+                    <br />
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                          Social Media Account Links
+                          <span className="text-primary font-bold"> *</span>
+                        </p>
+                      </div>
 
-                <br />
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                      Social Media Account Links
-                      <span className="text-primary font-bold"> *</span>
-                    </p>
+                      <ul className="grid grid-cols-2 gap-3">
+                        {/* github */}
+                        <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
+                          <input
+                            type="text"
+                            className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Link"
+                            value={"https://github.com/jasmininnaka24"}
+                          />
+                          <input
+                            type="text"
+                            className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Label"
+                            value={"jasmininnaka24"}
+                          />
+                          <GitHubIcon className="absolute left-3 top-4" />
+                        </li>
+
+                        {/* linkedin */}
+                        <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
+                          <input
+                            type="text"
+                            className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Link"
+                            value={
+                              "https://www.linkedin.com/in/jasmin-in-naka/"
+                            }
+                          />
+                          <input
+                            type="text"
+                            className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Label"
+                            value={"jasmin-in-naka"}
+                          />
+                          <LinkedInIcon className="absolute left-3 top-4" />
+                        </li>
+
+                        {/* facebook */}
+                        <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
+                          <input
+                            type="text"
+                            className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Link"
+                            value={"https://www.facebook.com/jasmin.innaka"}
+                          />
+                          <input
+                            type="text"
+                            className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Label"
+                            value={"jasmin.innaka"}
+                          />
+                          <FacebookIcon className="absolute left-3 top-4" />
+                        </li>
+                        <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
+                          <input
+                            type="text"
+                            className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
+                            placeholder="Link"
+                            value={"https://www.instagram.com/innk_jsmn/?hl=en"}
+                          />
+                          <input
+                            type="text"
+                            className="mt-2 w-full outline-none px-2 py-1 bg-secondary-light-dull border-thin-semi-dark rounded"
+                            placeholder="Label"
+                            value={"innk_jsmn"}
+                          />
+                          <InstagramIcon className="absolute left-3 top-4" />
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-
-                  <ul className="grid grid-cols-2 gap-3">
-                    {/* github */}
-                    <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
-                      <input
-                        type="text"
-                        className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Link"
-                        value={"https://github.com/jasmininnaka24"}
-                      />
-                      <input
-                        type="text"
-                        className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Label"
-                        value={"jasmininnaka24"}
-                      />
-                      <GitHubIcon className="absolute left-3 top-4" />
-                    </li>
-
-                    {/* linkedin */}
-                    <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
-                      <input
-                        type="text"
-                        className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Link"
-                        value={"https://www.linkedin.com/in/jasmin-in-naka/"}
-                      />
-                      <input
-                        type="text"
-                        className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Label"
-                        value={"jasmin-in-naka"}
-                      />
-                      <LinkedInIcon className="absolute left-3 top-4" />
-                    </li>
-
-                    {/* facebook */}
-                    <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
-                      <input
-                        type="text"
-                        className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Link"
-                        value={"https://www.facebook.com/jasmin.innaka"}
-                      />
-                      <input
-                        type="text"
-                        className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Label"
-                        value={"jasmin.innaka"}
-                      />
-                      <FacebookIcon className="absolute left-3 top-4" />
-                    </li>
-                    <li className="w-full relative text-semi-dark text-sm bg-dull-secondary-gray px-3 py-3 outline-none pl-11">
-                      <input
-                        type="text"
-                        className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
-                        placeholder="Link"
-                        value={"https://www.instagram.com/innk_jsmn/?hl=en"}
-                      />
-                      <input
-                        type="text"
-                        className="mt-2 w-full outline-none px-2 py-1 bg-secondary-light-dull border-thin-semi-dark rounded"
-                        placeholder="Label"
-                        value={"innk_jsmn"}
-                      />
-                      <InstagramIcon className="absolute left-3 top-4" />
-                    </li>
-                  </ul>
-                </div>
+                )}
 
                 <br />
                 <div className="mt-2 flex justify-end items-center">
-                  <button className="bg-primary text-white py-2 rounded w-1/3 quicksand outline-none">
-                    Save
+                  <button
+                    onClick={(e) =>
+                      updateBtn
+                        ? updatePersonalDetailsData(e)
+                        : savePersonalDetailsData(e)
+                    }
+                    className="bg-primary text-white py-2 rounded w-1/3 quicksand outline-none"
+                  >
+                    {updateBtn ? "Update" : "Save"}
                   </button>
                 </div>
               </form>
