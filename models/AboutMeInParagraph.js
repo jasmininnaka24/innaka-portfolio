@@ -1,10 +1,10 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/sequelize");
 
-const AboutMeTech = sequelize.define("AboutMeTech", {
-  imageName: {
+const AboutMeInParagraph = sequelize.define("AboutMeInParagraph", {
+  paragraph: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   PortfolioAboutId: {
     type: DataTypes.INTEGER,
@@ -12,8 +12,8 @@ const AboutMeTech = sequelize.define("AboutMeTech", {
   },
 });
 
-AboutMeTech.associate = (models) => {
-  AboutMeTech.belongsTo(models.PortfolioAbout, {
+AboutMeInParagraph.associate = (models) => {
+  AboutMeInParagraph.belongsTo(models.PortfolioAbout, {
     foreignKey: {
       name: "PortfolioAboutId",
       allowNull: true,
@@ -22,4 +22,4 @@ AboutMeTech.associate = (models) => {
   });
 };
 
-module.exports = AboutMeTech;
+module.exports = AboutMeInParagraph;

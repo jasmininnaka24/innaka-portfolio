@@ -16,11 +16,4 @@ const PortfolioServices = sequelize.define("PortfolioServices", {
   },
 });
 
-// Project Category
-PortfolioServices.associate = (models) => {
-  PortfolioServices.hasMany(models.PortfolioProjects, {
-    onDelete: "cascade",
-  });
-};
-
 module.exports = PortfolioServices;

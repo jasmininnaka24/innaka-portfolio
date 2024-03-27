@@ -12,7 +12,7 @@ const HeroSection = ({
   return (
     <section
       id="#"
-      style={{ minHeight: "30rem" }}
+      style={{ minHeight: "100vh" }}
       className={`py-10 mt-12 gap-8 rounded flex flex-row-reverse items-center justify-center`}
     >
       <article className="w-full flex flex-row-reverse items-center justify-center gap-5">

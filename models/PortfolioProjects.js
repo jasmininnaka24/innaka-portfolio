@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/sequelize");
 
-const PortfolioServices = sequelize.define("PortfolioServices", {
+const PortfolioProjects = sequelize.define("PortfolioProjects", {
   projectTitle: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -28,4 +28,13 @@ const PortfolioServices = sequelize.define("PortfolioServices", {
   },
 });
 
-module.exports = PortfolioServices;
+PortfolioProjects.associate = (models) => {
+  PortfolioProjects.hasMany(models.PortfolioServices, {
+    onDelete: "cascade",
+  });
+  PortfolioProjects.hasMany(models.ProjectTechs, {
+    onDelete: "cascade",
+  });
+};
+
+module.exports = PortfolioProjects;

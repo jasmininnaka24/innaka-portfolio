@@ -2,8 +2,8 @@ const ServiceSection = ({ Image, Website, Mobile, Desktop, Design }) => {
   return (
     <section
       id="services"
-      style={{ minHeight: "40rem" }}
-      className={`flex py-28 w-full`}
+      style={{ minHeight: "100vh" }}
+      className={`flex items-center py-28 w-full`}
     >
       <div className="w-full">
         <div className="flex items-center">

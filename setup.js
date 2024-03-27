@@ -3,12 +3,9 @@
 const sequelize = require("./utils/sequelize");
 
 // models
-require("./models/AboutMe");
-require("./models/AboutMeHighlighted");
+require("./models/AboutMeInParagraph");
 require("./models/AboutMeTech");
 require("./models/PersonalDetails");
-require("./models/PersonalDetailsHeadlines");
-require("./models/PersonalDetailsHighlighted");
 require("./models/PersonalDetailsSocialLinks");
 require("./models/PortfolioAbout");
 require("./models/PortfolioProjects");

@@ -4,16 +4,31 @@ const sequelize = require("../utils/sequelize");
 const PersonalDetailsSocialLinks = sequelize.define(
   "PersonalDetailsSocialLinks",
   {
-    highlightedWord: {
+    platform: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    link: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    label: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    PersonalDetailsId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
   }
 );
-
 PersonalDetailsSocialLinks.associate = (models) => {
-  PersonalDetailsSocialLinks.hasMany(models.PersonalDetails, {
-    onDelete: "cascade",
+  PersonalDetailsSocialLinks.belongsTo(models.PersonalDetails, {
+    foreignKey: {
+      name: "PersonalDetailsId",
+      allowNull: true,
+      onDelete: "cascade",
+    },
   });
 };
 

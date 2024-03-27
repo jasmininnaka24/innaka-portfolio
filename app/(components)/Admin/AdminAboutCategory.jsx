@@ -1,20 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const AdminAboutCategory = ({
   imports: { Image },
-  variables: { aboutHighlightsArr, aboutArr, selectedfile, images },
-  functions: {
-    handleImgUpload,
-    addAboutMeArrInfo,
-    addAboutHighlightsArr,
-    FileUploadSubmit,
-    InputChange,
-    handleRemoveImage,
-    handleAboutHighlightsArr,
-    removeAboutHighlightsArr,
-    handleAboutMeArrInfo,
-  },
-  icons: { AddIcon, CloseIcon, EmailIcon }, // Destructure icons from icons object
+  variables: { images },
+  functions: { handleImgUpload, handleRemoveImage },
+  icons: { CloseIcon },
   technologyIcons: {
     Bootstrap,
     CSS,
@@ -32,179 +22,293 @@ const AdminAboutCategory = ({
     PHP,
   },
 }) => {
+  // starting data
+  const startingData = {
+    job_role: "",
+    currently_practicing: "",
+    resume_link: "",
+    paragraphs: [
+      {
+        id: null,
+        paragraph: "",
+        PortfolioAboutId: "",
+      },
+      {
+        id: null,
+        paragraph: "",
+        PortfolioAboutId: "",
+      },
+    ],
+  };
+
+  const [aboutData, setAboutData] = useState(startingData);
+  const [updateBtn, setUpdateBtn] = useState(false);
+
+  const handleChangeForAboutData = (e) => {
+    const { name, value } = e.target;
+    setAboutData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const getPortfolioAboutInformation = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioAboutsApi`, data);
+      const response = await res.json();
+      console.log(response.data);
+      if (response?.data[0] !== undefined) {
+        setAboutData((prevState) => ({
+          ...prevState,
+          id: response?.data[0].id,
+          job_role: response?.data[0].jobRole,
+          currently_practicing: response?.data[0].currentlyPracticing,
+          resume_link: response?.data[0].resumeLink,
+        }));
+
+        setUpdateBtn(true);
+      }
+    }
+  };
+
+  const saveAboutData = async (e) => {
+    e.preventDefault();
+    const data = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobRole: aboutData.job_role,
+        currentlyPracticing: aboutData.currently_practicing,
+        resumeLink: aboutData.resume_link,
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioAboutsApi`, data);
+
+      if (res) {
+        getPortfolioAboutInformation();
+      }
+    }
+  };
+
+  const updateAboutData = async (e) => {
+    e.preventDefault();
+    const data = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: aboutData.id,
+        jobRole: aboutData.job_role,
+        currentlyPracticing: aboutData.currently_practicing,
+        resumeLink: aboutData.resume_link,
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioAboutsApi`, data);
+
+      if (res) {
+        getaboutsParagraphData();
+        console.log(aboutData.paragraphs);
+        if (aboutData.paragraphs.length > 0) {
+          updateAboutParagraphsData();
+        } else {
+          saveAboutParagraphsData();
+        }
+      }
+    }
+  };
+
+  const handleChangeForParagraphs = (e, index) => {
+    const { name, value } = e.target;
+
+    // Create a copy of the paragraphs array using spread syntax
+    const updatedParagraphs = [...aboutData.paragraphs];
+
+    // Update the specific social link object
+    updatedParagraphs[index] = {
+      ...updatedParagraphs[index],
+      [name]: value,
+    };
+
+    // Update the state using setAboutData with the entire updated object
+    setAboutData((prevState) => ({
+      ...prevState,
+      paragraphs: updatedParagraphs,
+    }));
+
+    console.log(aboutData.paragraphs);
+  };
+
+  const getaboutsParagraphData = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioAboutsParagraphApi`, data);
+      const response = await res.json();
+      if (response?.data.length > 0) {
+        setAboutData((prevState) => ({
+          ...prevState,
+          paragraphs: response?.data,
+        }));
+        setUpdateBtn(true);
+      }
+    }
+  };
+
+  const saveAboutParagraphsData = async () => {
+    aboutData?.paragraphs?.map(async (item) => {
+      const data = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paragraph: item.paragraph,
+          PortfolioAboutId: aboutData.id,
+        }),
+      };
+
+      if (data) {
+        await fetch(`/api/portfolioAboutsParagraphApi`, data);
+      }
+
+      console.log(data);
+    });
+  };
+
+  const updateAboutParagraphsData = async () => {
+    aboutData?.paragraphs?.map(async (item) => {
+      const data = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: item.id,
+          paragraph: item.paragraph,
+          PortfolioAboutId: aboutData.id,
+        }),
+      };
+
+      if (data) {
+        await fetch(`/api/portfolioAboutsParagraphApi`, data);
+        getaboutsParagraphData();
+      }
+    });
+  };
+
+  useEffect(() => {
+    getPortfolioAboutInformation();
+    getaboutsParagraphData();
+  }, []);
+
   return (
     <div>
       <div className="flex gap-5">
         <article className="w-1/2 border-dull-gray-right pr-5">
-          <div>
-            <div className="flex items-center justify-between">
+          <div className="grid grid-cols-1 gap-3">
+            <div className="w-full">
               <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                About me
+                Job Role
                 <span className="text-primary font-bold"> *</span>
               </p>
-
-              <button onClick={addAboutMeArrInfo}>
-                <AddIcon />
-              </button>
+              <input
+                type="text"
+                className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                name="job_role"
+                value={aboutData.job_role || ""}
+                required={true}
+                onChange={handleChangeForAboutData}
+                placeholder="Job Role"
+              />
             </div>
-
-            {aboutArr.map((item, index) => (
-              <div
-                className="relative w-full flex items-center justify-between"
-                key={index}
-              >
-                <input
-                  type="text"
-                  className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                  placeholder="Type here..."
-                  value={item}
-                  onChange={(e) => handleAboutMeArrInfo(e, index)}
-                />
-
-                <button
-                  className="absolute right-2 top-2"
-                  onClick={() => removeAboutMeArrInfo(index)}
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-            ))}
-
-            <ul className="grid grid-cols-1 gap-2 mt-3">
-              <li className="w-full">
-                <textarea
-                  name=""
-                  id=""
-                  rows="5"
-                  className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                  placeholder="Type here..."
-                >
-                  I`m a Software Developer. Currently practicing UX/UI Design.
-                  Productive coding at night till midnight. I love coffee, cats,
-                  and rainy season.
-                </textarea>
-              </li>
-            </ul>
+            <div className="w-full">
+              <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                Currently Practicing
+                <span className="text-primary font-bold"> *</span>
+              </p>
+              <input
+                type="text"
+                className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                name="currently_practicing"
+                value={aboutData.currently_practicing || ""}
+                onChange={handleChangeForAboutData}
+                placeholder="Currently Practicing"
+              />
+            </div>
           </div>
 
           <br />
-          <div className="mt-5">
+          <br />
+          {/* Paragraph */}
+          <div>
             <div className="flex items-center justify-between">
               <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                Highlighted Word(s)
+                About me in paragraph form
                 <span className="text-primary font-bold"> *</span>
               </p>
-
-              <button onClick={addAboutHighlightsArr}>
-                <AddIcon />
-              </button>
             </div>
 
-            {aboutHighlightsArr.map((item, index) => (
-              <div
-                className="relative w-full flex items-center justify-between"
-                key={index}
-              >
-                <input
-                  type="text"
-                  className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                  placeholder="Type here..."
-                  value={item}
-                  onChange={(e) => handleAboutHighlightsArr(e, index)}
-                />
-
-                <button
-                  className="absolute right-2 top-2"
-                  onClick={() => removeAboutHighlightsArr(index)}
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-            ))}
-
-            <ul className="grid grid-cols-1 mt-3">
-              <li className="w-full">
-                <input
-                  type="text"
-                  className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                  placeholder="Type here..."
-                  value={"Software Developer."}
-                />
-              </li>
-              <li className="w-full">
-                <input
-                  type="text"
-                  className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
-                  placeholder="Type here..."
-                  value={"UX/UI Design."}
-                />
-              </li>
-            </ul>
+            {updateBtn && (
+              <ul className="grid grid-cols-1 gap-2 mt-3">
+                <li className="w-full">
+                  <textarea
+                    name="paragraph"
+                    rows="5"
+                    className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                    placeholder="Type here..."
+                    onChange={(e) => handleChangeForParagraphs(e, 0)}
+                    value={aboutData.paragraphs[0]?.paragraph}
+                  ></textarea>
+                </li>
+                <li className="w-full">
+                  <textarea
+                    name="paragraph"
+                    rows="5"
+                    className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                    placeholder="Type here..."
+                    onChange={(e) => handleChangeForParagraphs(e, 1)}
+                    value={aboutData.paragraphs[1]?.paragraph}
+                  ></textarea>
+                </li>
+              </ul>
+            )}
           </div>
         </article>
 
         <article className="w-1/2">
           <div>
-            <div className="flex items-center justify-between">
-              <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                Resume Upload
-                <span className="text-primary font-bold"> *</span>
-              </p>
-            </div>
-
-            <div className="fileupload-view">
-              <div className="row justify-content-center m-0">
-                <div className="col-md-6">
-                  <div>
-                    <div className="kb-data-box">
-                      <form onSubmit={FileUploadSubmit}>
-                        <div className="kb-file-upload">
-                          <div className="file-upload-box rounded quicksand bg-dull-secondary-gray">
-                            <input
-                              type="file"
-                              id="fileupload"
-                              className="file-upload-input"
-                              onChange={InputChange}
-                            />
-                            <span className="quicksand text-secondary-dark text-normal">
-                              Drag and drop or{" "}
-                              <span className="quicksand text-dark underline">
-                                Choose your file
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                        <div className="kb-attach-box mb-3">
-                          <div className="file-atc-box">
-                            <div className="border-dull-gray w-full px-3 py-2 rounded flex items-center gap-2">
-                              <Image
-                                src={EmailIcon}
-                                className="rounded"
-                                style={{
-                                  width: "2.3rem",
-                                  height: "2.3rem",
-                                  objectFit: "cover",
-                                }}
-                                alt=""
-                              />
-                              <div>
-                                <h6 className="quicksand text-sm font-bold text-semi-dark capitalize m-0">
-                                  {selectedfile.filename}
-                                </h6>
-                                <p style={{ marginTop: "-.3rem" }}>
-                                  <span className="text-secondary-dark text-xs">
-                                    Size : {selectedfile.filesize}
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+              Resume Link
+              <span className="text-primary font-bold"> *</span>
+            </p>
+            <div className="w-full">
+              <input
+                type="text"
+                className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                placeholder="Resume Link"
+                name="resume_link"
+                onChange={handleChangeForAboutData}
+                value={aboutData.resume_link || ""}
+              />
             </div>
           </div>
 
@@ -436,9 +540,11 @@ const AdminAboutCategory = ({
       <div className="flex items-center justify-end w-full">
         <button
           className={`w-1/6 py-2 rounded bg-primary text-white`}
-          onClick={(e) => updateUserImage(e, 1)}
+          onClick={(e) => {
+            updateBtn ? updateAboutData(e) : saveAboutData(e);
+          }}
         >
-          Update
+          {updateBtn ? "Update" : "Save"}
         </button>
       </div>
     </div>

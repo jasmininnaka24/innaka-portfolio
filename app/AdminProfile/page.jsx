@@ -2,14 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import Photo from "../../public/aboutphoto.png";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // icon imports
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -19,104 +15,22 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import AdminProfileFunction from "../(functions)/AdminProfileFunction";
 
 const AdminProfile = () => {
-  const router = useRouter();
-
   const {
     functions: {
-      addHeadlineArr,
-      handleHeadlineArr,
-      removeHeadlineArr,
-      updateHeadline,
-      addHeadlineHighlightsArr,
-      handleHeadlineHighlightsArr,
-      updateHeadlineHighlightsArr,
-      removeHeadlineHighlightsArr,
+      handleChangeForPersonalDetails,
+      getinformationData,
+      saveinformationData,
+      updateinformationData,
+      handleChangeForSocialLinks,
+      getSocialLinks,
     },
-    stateFunctions: {
-      getRootProps,
-      getInputProps,
-      setHheadlineHighlightsArr,
-      setHeadlineArr,
-    },
-    stateVariables: { acceptedFiles, headlineArr, headlineHighlightsArr },
+    stateFunctions: { getRootProps, getInputProps },
+    stateVariables: { acceptedFiles, informationData, updateBtn },
   } = AdminProfileFunction();
 
-  // starting data
-  const startingData = {
-    fullname: "",
-    email: "",
-  };
-
-  // States
-  const [personalDetailsData, setPersonalDetailsData] = useState(startingData);
-  const [updateBtn, setUpdateBtn] = useState(false);
-
-  const handleChangeForPersonalDetails = (e) => {
-    const { name, value } = e.target;
-    setPersonalDetailsData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const savePersonalDetailsData = async (e) => {
-    e.preventDefault();
-    const data = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fullname: personalDetailsData?.fullname,
-        email: personalDetailsData?.email,
-      }),
-    };
-
-    const res = await fetch(`/api/personalDetailsApi`, data);
-    console.log(data);
-
-    getPersonalDetailsData();
-  };
-
-  const updatePersonalDetailsData = async (e) => {
-    e.preventDefault();
-    const data = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: personalDetailsData?.id,
-        fullname: personalDetailsData?.fullname,
-        email: personalDetailsData?.email,
-      }),
-    };
-
-    const res = await fetch(`/api/personalDetailsApi`, data);
-    console.log(data);
-
-    getPersonalDetailsData();
-  };
-
-  const getPersonalDetailsData = async () => {
-    const data = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const res = await fetch(`/api/personalDetailsApi`, data);
-    const response = await res.json();
-    setPersonalDetailsData(response?.data[0]);
-
-    if (response?.data[0]?.fullname !== "") {
-      setUpdateBtn(true);
-    }
-  };
-
   useEffect(() => {
-    getPersonalDetailsData();
+    getinformationData();
+    getSocialLinks();
   }, []);
 
   return (
@@ -177,7 +91,7 @@ const AdminProfile = () => {
           >
             <article className="w-2/3">
               <form action="" className="w-full mt-5">
-                <div className="flex items-center justify-center gap-3 mt-4">
+                <div className="grid grid-cols-2 gap-3 mt-4">
                   <div className="w-full">
                     <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
                       Full Name
@@ -187,7 +101,7 @@ const AdminProfile = () => {
                       type="text"
                       className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                       name="fullname"
-                      value={personalDetailsData?.fullname || ""}
+                      value={informationData?.fullname || ""}
                       onChange={handleChangeForPersonalDetails}
                       placeholder="Full Name"
                     />
@@ -201,115 +115,82 @@ const AdminProfile = () => {
                       className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                       name="email"
                       required={true}
-                      value={personalDetailsData?.email || ""}
+                      value={informationData?.email || ""}
                       autoComplete="off"
                       onChange={handleChangeForPersonalDetails}
                       placeholder="Email"
                     />
                   </div>
+                  <div className="w-full">
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                      Age<span className="text-primary font-bold"> *</span>
+                    </p>
+                    <input
+                      type="number"
+                      className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                      name="age"
+                      required={true}
+                      value={informationData?.age || ""}
+                      autoComplete="off"
+                      onChange={handleChangeForPersonalDetails}
+                      placeholder="Age"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                      Role<span className="text-primary font-bold"> *</span>
+                    </p>
+                    <input
+                      type="text"
+                      className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                      name="role"
+                      required={true}
+                      value={informationData?.role || ""}
+                      autoComplete="off"
+                      onChange={handleChangeForPersonalDetails}
+                      placeholder="Role"
+                    />
+                  </div>
+                </div>
+
+                <br />
+                <div className="w-full">
+                  <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                    Interest<span className="text-primary font-bold"> *</span>
+                  </p>
+                  <input
+                    type="text"
+                    className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                    name="interest"
+                    required={true}
+                    value={informationData?.interest || ""}
+                    autoComplete="off"
+                    onChange={handleChangeForPersonalDetails}
+                    placeholder="Interest"
+                  />
+                </div>
+                <br />
+                <div className="w-full">
+                  <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                    Personal Approach
+                    <span className="text-primary font-bold"> *</span>
+                  </p>
+                  <input
+                    type="text"
+                    className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+                    name="approach"
+                    required={true}
+                    value={informationData?.approach || ""}
+                    autoComplete="off"
+                    onChange={handleChangeForPersonalDetails}
+                    placeholder="Personal Approach"
+                  />
                 </div>
 
                 <br />
 
                 {updateBtn && (
                   <div>
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between">
-                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                          Headlines
-                          <span className="text-primary font-bold"> *</span>
-                        </p>
-
-                        <button onClick={addHeadlineArr}>
-                          <AddIcon />
-                        </button>
-                      </div>
-
-                      {headlineArr.map((item, index) => (
-                        <div
-                          className="relative w-full flex items-center justify-between"
-                          key={index}
-                        >
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full pl-3 pr-10 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                            value={item}
-                            onChange={(e) => handleHeadlineArr(e, index)}
-                          />
-
-                          {/* <button
-                            className="absolute right-8 top-2"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              updateHeadline(e, index);
-                            }}
-                          >
-                            <CheckIcon />
-                          </button> */}
-                          <button
-                            className="absolute right-2 top-2"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              removeHeadlineArr(e, index);
-                            }}
-                          >
-                            <CloseIcon />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-
-                    <br />
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between">
-                        <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                          Highlighted Word(s)
-                          <span className="text-primary font-bold"> *</span>
-                        </p>
-
-                        <button onClick={addHeadlineHighlightsArr}>
-                          <AddIcon />
-                        </button>
-                      </div>
-
-                      {headlineHighlightsArr.map((item, index) => (
-                        <div
-                          className="relative w-full flex items-center justify-between"
-                          key={index}
-                        >
-                          <input
-                            type="text"
-                            className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full pl-3 pr-10 py-2 rounded outline-none"
-                            placeholder="Type here..."
-                            value={item}
-                            onChange={(e) =>
-                              handleHeadlineHighlightsArr(e, index)
-                            }
-                          />
-                          {/* <button
-                            className="absolute right-8 top-2"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              updateHeadlineHighlightsArr(e, index);
-                            }}
-                          >
-                            <CheckIcon />
-                          </button> */}
-                          <button
-                            className="absolute right-2 top-2"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              removeHeadlineHighlightsArr(e, index);
-                            }}
-                          >
-                            <CloseIcon />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-
-                    <br />
                     <div className="mt-4">
                       <div className="flex items-center justify-between">
                         <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
@@ -325,13 +206,17 @@ const AdminProfile = () => {
                             type="text"
                             className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Link"
-                            value={"https://github.com/jasmininnaka24"}
+                            name="link"
+                            onChange={(e) => handleChangeForSocialLinks(e, 0)}
+                            value={informationData?.socialLinks[0]?.link || ""}
                           />
                           <input
                             type="text"
                             className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Label"
-                            value={"jasmininnaka24"}
+                            name="label"
+                            onChange={(e) => handleChangeForSocialLinks(e, 0)}
+                            value={informationData?.socialLinks[0]?.label || ""}
                           />
                           <GitHubIcon className="absolute left-3 top-4" />
                         </li>
@@ -342,15 +227,17 @@ const AdminProfile = () => {
                             type="text"
                             className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Link"
-                            value={
-                              "https://www.linkedin.com/in/jasmin-in-naka/"
-                            }
+                            name="link"
+                            onChange={(e) => handleChangeForSocialLinks(e, 1)}
+                            value={informationData?.socialLinks[1]?.link || ""}
                           />
                           <input
                             type="text"
                             className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Label"
-                            value={"jasmin-in-naka"}
+                            name="label"
+                            onChange={(e) => handleChangeForSocialLinks(e, 1)}
+                            value={informationData?.socialLinks[1]?.label || ""}
                           />
                           <LinkedInIcon className="absolute left-3 top-4" />
                         </li>
@@ -361,13 +248,17 @@ const AdminProfile = () => {
                             type="text"
                             className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Link"
-                            value={"https://www.facebook.com/jasmin.innaka"}
+                            name="link"
+                            onChange={(e) => handleChangeForSocialLinks(e, 2)}
+                            value={informationData?.socialLinks[2]?.link || ""}
                           />
                           <input
                             type="text"
                             className="mt-2 w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Label"
-                            value={"jasmin.innaka"}
+                            name="label"
+                            onChange={(e) => handleChangeForSocialLinks(e, 2)}
+                            value={informationData?.socialLinks[2]?.label || ""}
                           />
                           <FacebookIcon className="absolute left-3 top-4" />
                         </li>
@@ -376,13 +267,17 @@ const AdminProfile = () => {
                             type="text"
                             className="w-full outline-none px-2 py-1 border-thin-semi-dark rounded bg-secondary-light-dull"
                             placeholder="Link"
-                            value={"https://www.instagram.com/innk_jsmn/?hl=en"}
+                            name="link"
+                            onChange={(e) => handleChangeForSocialLinks(e, 3)}
+                            value={informationData?.socialLinks[3]?.link || ""}
                           />
                           <input
                             type="text"
                             className="mt-2 w-full outline-none px-2 py-1 bg-secondary-light-dull border-thin-semi-dark rounded"
                             placeholder="Label"
-                            value={"innk_jsmn"}
+                            name="label"
+                            onChange={(e) => handleChangeForSocialLinks(e, 3)}
+                            value={informationData?.socialLinks[3]?.label || ""}
                           />
                           <InstagramIcon className="absolute left-3 top-4" />
                         </li>
@@ -396,8 +291,8 @@ const AdminProfile = () => {
                   <button
                     onClick={(e) =>
                       updateBtn
-                        ? updatePersonalDetailsData(e)
-                        : savePersonalDetailsData(e)
+                        ? updateinformationData(e)
+                        : saveinformationData(e)
                     }
                     className="bg-primary text-white py-2 rounded w-1/3 quicksand outline-none"
                   >

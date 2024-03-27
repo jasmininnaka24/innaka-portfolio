@@ -10,6 +10,28 @@ const PersonalDetails = sequelize.define("PersonalDetails", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  age: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  interest: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  approach: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
+
+PersonalDetails.associate = (models) => {
+  PersonalDetails.hasMany(models.PersonalDetailsSocialLinks, {
+    onDelete: "cascade",
+  });
+};
 
 module.exports = PersonalDetails;

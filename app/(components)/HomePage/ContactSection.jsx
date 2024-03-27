@@ -10,7 +10,7 @@ const ContactSection = ({
   return (
     <section
       id="contacts"
-      style={{ minHeight: "35rem", zIndex: 5 }}
+      style={{ minHeight: "100vh", zIndex: 5 }}
       className={`py-32 flex items-center justify-center`}
     >
       <div className="flex gap-11 items-center justify-center">

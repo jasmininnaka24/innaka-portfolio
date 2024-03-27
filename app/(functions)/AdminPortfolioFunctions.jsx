@@ -83,100 +83,6 @@ const AdminPortfolioFunctions = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   };
 
-  const InputChange = (e) => {
-    // --For Single File Input
-    let reader = new FileReader();
-    let file = e.target.files[0];
-
-    reader.onloadend = () => {
-      SetSelectedFile({
-        id: shortid.generate(),
-        filename: e.target.files[0].name,
-        filetype: e.target.files[0].type,
-        fileimage: reader.result,
-        datetime: e.target.files[0].lastModifiedDate.toLocaleString("en-IN"),
-        filesize: filesizes(e.target.files[0].size),
-      });
-    };
-    if (e.target.files[0]) {
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const DeleteSelectFile = (id) => {
-    if (window.confirm("Are you sure you want to delete this Image?")) {
-      const result = selectedfile.filter((data) => data.id !== id);
-      SetSelectedFile(result);
-    } else {
-      // alert('No');
-    }
-  };
-
-  const FileUploadSubmit = async (e) => {
-    e.preventDefault();
-
-    // form reset on submit
-    e.target.reset();
-    if (selectedfile !== "") {
-      SetFiles((preValue) => {
-        return [...preValue, selectedfile];
-      });
-      SetSelectedFile("");
-    } else {
-      alert("Please select file");
-    }
-  };
-
-  const DeleteFile = async (id) => {
-    if (window.confirm("Are you sure you want to delete this Image?")) {
-      const result = Files.filter((data) => data.id !== id);
-      SetFiles(result);
-    } else {
-      // alert('No');
-    }
-  };
-
-  // functions for adding about inputs
-  const addAboutMeArrInfo = () => {
-    if (aboutArr.length === 0 || aboutArr.every((item) => item !== "")) {
-      setAboutArr([...aboutArr, ""]);
-    }
-  };
-
-  const handleAboutMeArrInfo = (e, index) => {
-    const newArr = [...aboutArr];
-    newArr[index] = e.target.value;
-    setAboutArr(newArr);
-  };
-
-  const removeAboutMeArrInfo = (indexToRemove) => {
-    setAboutArr((prevArr) =>
-      prevArr.filter((_, index) => index !== indexToRemove)
-    );
-  };
-
-  // functions for adding about highlights
-  const addAboutHighlightsArr = () => {
-    if (
-      aboutHighlightsArr.length === 0 ||
-      aboutHighlightsArr.every((item) => item !== "")
-    ) {
-      setAboutHighlightsArr([...aboutHighlightsArr, ""]);
-    }
-  };
-
-  const handleAboutHighlightsArr = (e, index) => {
-    const newArr = [...aboutHighlightsArr];
-    newArr[index] = e.target.value;
-    setAboutHighlightsArr(newArr);
-  };
-
-  const removeAboutHighlightsArr = (indexToRemove) => {
-    setAboutHighlightsArr((prevArr) =>
-      prevArr.filter((_, index) => index !== indexToRemove)
-    );
-  };
-
   // functions for adding project tech used
   const addProjectTechUsed = () => {
     if (
@@ -199,36 +105,19 @@ const AdminPortfolioFunctions = () => {
     );
   };
 
+  // /////////////////////////////////////////////////////
+  // ABOUT CATEGORY FUNCTIONS
+
   return {
     functions: {
       handleImgUpload,
       handleRemoveImage,
-      filesizes,
-      InputChange,
-      DeleteSelectFile,
-      FileUploadSubmit,
-      DeleteFile,
-      addAboutMeArrInfo,
-      handleAboutMeArrInfo,
-      removeAboutMeArrInfo,
-      addAboutHighlightsArr,
-      handleAboutHighlightsArr,
-      removeAboutHighlightsArr,
       addProjectTechUsed,
       handleProjectTechUsed,
       removeProjectTechUsed,
     },
     stateFunctions: {
-      SetSelectedFile,
-      SetFiles,
       setOnEditMode,
-      setOnEditModeID,
-      setAdded,
-      setUpdated,
-      setDeleted,
-      setWarning,
-      setError,
-      setMsg,
       setAboutCategory,
       setProjectCategory,
       setQualificationsCategory,
@@ -236,25 +125,17 @@ const AdminPortfolioFunctions = () => {
       setExperience,
       getRootProps,
       getInputProps,
-      setAboutArr,
-      setAboutHighlightsArr,
-      setProjectTechsUsedArr,
       setEducation,
       setCredentials,
       setImages,
     },
     stateVariables: {
       acceptedFiles,
-      selectedfile,
-      Files,
+      acceptedFiles,
       onEditMode,
-      onEditModeID,
       added,
       updated,
       deleted,
-      warning,
-      error,
-      msg,
       aboutCategory,
       projectCategory,
       qualificationsCategory,
@@ -263,8 +144,6 @@ const AdminPortfolioFunctions = () => {
       education,
       credentials,
       images,
-      aboutArr,
-      aboutHighlightsArr,
       projectTechsUsedArr,
     },
   };

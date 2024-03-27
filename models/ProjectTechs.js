@@ -6,11 +6,19 @@ const ProjectTechs = sequelize.define("ProjectTechs", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  PortfolioProjectsId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
 
 ProjectTechs.associate = (models) => {
-  ProjectTechs.hasMany(models.PortfolioProjects, {
-    onDelete: "cascade",
+  ProjectTechs.belongsTo(models.PortfolioProjects, {
+    foreignKey: {
+      name: "PortfolioProjectsId",
+      allowNull: true,
+      onDelete: "cascade",
+    },
   });
 };
 

@@ -12,4 +12,4 @@ const sequelize = new Sequelize({
   benchmark: true,
 });
 
-module.exports = sequelize; // Use module.exports instead of export default
+module.exports = sequelize;

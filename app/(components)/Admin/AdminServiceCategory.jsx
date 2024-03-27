@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const AdminServiceCategory = ({
   imports: { Image, Link },
@@ -7,6 +7,73 @@ const AdminServiceCategory = ({
   functions: { getInputProps, getRootProps, setOnEditMode },
   technologyIcons: { MySQL, SocketIO, Tailwind },
 }) => {
+  // starting data
+  const startingData = {
+    service_name: "",
+    service_desc: "",
+    image: "",
+  };
+
+  // States
+  const [servicesData, setServicesData] = useState([]);
+  const [onHoldServiceData, setOnHoldServiceData] = useState(startingData);
+  const [updateBtn, setUpdateBtn] = useState(false);
+
+  const handleChangeForServiceData = (e) => {
+    const { name, value } = e.target;
+    setOnHoldServiceData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+    console.log(value);
+  };
+
+  const getServicesData = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioServicesApi`, data);
+      const response = await res.json();
+      console.log(response.data);
+      setServicesData(response.data);
+    }
+  };
+
+  const addService = async (e) => {
+    e.preventDefault();
+    const data = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        serviceName: onHoldServiceData?.service_name,
+        serviceDesc: onHoldServiceData?.service_desc,
+        serviceImgName:
+          onHoldServiceData?.image !== ""
+            ? onHoldServiceData?.image
+            : "user.png",
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioServicesApi`, data);
+      if (res) {
+        getServicesData(); // Call the function with the correct name
+      }
+    }
+  };
+
+  useEffect(() => {
+    getServicesData();
+  }, []);
+
   return (
     <div className="flex gap-5">
       <article className="w-1/2 border-dull-gray-right pr-5">
@@ -39,7 +106,10 @@ const AdminServiceCategory = ({
                 type="text"
                 className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                 placeholder="Type here..."
-                value={"Website/Web Application"}
+                name="service_name"
+                value={onHoldServiceData.service_name || ""}
+                required={true}
+                onChange={handleChangeForServiceData}
               />
             </div>
 
@@ -149,6 +219,10 @@ const AdminServiceCategory = ({
                 type="text"
                 className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                 placeholder="Type here..."
+                name="service_name"
+                value={onHoldServiceData.service_name || ""}
+                required={true}
+                onChange={handleChangeForServiceData}
               />
             </div>
 
@@ -161,11 +235,14 @@ const AdminServiceCategory = ({
                 </p>
               </div>
               <textarea
-                name=""
                 id=""
                 rows="5"
                 className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                 placeholder="Type here..."
+                name="service_desc"
+                value={onHoldServiceData.service_desc || ""}
+                required={true}
+                onChange={handleChangeForServiceData}
               ></textarea>
             </div>
 
@@ -187,7 +264,13 @@ const AdminServiceCategory = ({
                   border: "3px dashed #888",
                 }}
               >
-                <input {...getInputProps()} name="image" type="file" />
+                <input
+                  {...getInputProps()}
+                  name="image"
+                  value={onHoldServiceData.image || ""}
+                  onChange={handleChangeForServiceData}
+                  type="file"
+                />
                 {acceptedFiles.length === 0 ? (
                   <Image
                     src={MySQL}
@@ -232,7 +315,7 @@ const AdminServiceCategory = ({
             <div className="flex items-center justify-end w-full">
               <button
                 className={`w-1/3 py-2 rounded bg-primary text-white`}
-                onClick={(e) => updateUserImage(e, 1)}
+                onClick={(e) => addService(e)}
               >
                 Add Service
               </button>
@@ -284,101 +367,57 @@ const AdminServiceCategory = ({
           </ul>
         </div>
         <br />
-
         <section className={` w-full relative my-3`}>
           <ul className="grid grid-cols-1 gap-5 w-full">
-            <li className="box-shadow-dull p-6 rounded flex items-center w-full">
-              <div className="flex flex-col items-center w-full">
-                <div className="border-dull-gray-bottom mb-3 pb-1 flex items-center justify-end w-full">
-                  <div className="flex items-center gap-2 text-semi-dark text-sm">
-                    <button
-                      className="text-primary-dark"
-                      onClick={() => setOnEditMode(true)}
-                    >
-                      <BorderColorIcon fontSize="small" />
-                    </button>
-                    <button className="pt-1 text-red">
-                      <DeleteSweepIcon />
-                    </button>
-                  </div>
-                </div>
-
-                {/* tools I used */}
-
-                <div className="w-full">
-                  <div className="w-full flex items-center justify-center">
-                    <Image
-                      src={SocketIO}
-                      alt=""
-                      style={{
-                        width: "6rem",
-                        height: "6rem",
-                        objectFit: "cover",
-                      }}
-                      className="w-full rounded border-dull-gray p-2"
-                    />
+            {servicesData.map((item, index) => (
+              <li
+                className="box-shadow-dull p-6 rounded flex items-center w-full"
+                key={index}
+              >
+                <div className="flex flex-col items-center w-full">
+                  <div className="border-dull-gray-bottom mb-3 pb-1 flex items-center justify-end w-full">
+                    <div className="flex items-center gap-2 text-semi-dark text-sm">
+                      <button
+                        className="text-primary-dark"
+                        onClick={() => setOnEditMode(true)}
+                      >
+                        <BorderColorIcon fontSize="small" />
+                      </button>
+                      <button className="pt-1 text-red">
+                        <DeleteSweepIcon />
+                      </button>
+                    </div>
                   </div>
 
-                  <br />
+                  {/* tools I used */}
 
-                  <h3 className="text-semi-dark font-bold text-xl mt-1 text-center quicksand">
-                    Website/Web Application
-                  </h3>
+                  <div className="w-full">
+                    <div className="w-full flex items-center justify-center">
+                      <Image
+                        src={SocketIO}
+                        alt=""
+                        style={{
+                          width: "6rem",
+                          height: "6rem",
+                          objectFit: "cover",
+                        }}
+                        className="w-full rounded border-dull-gray p-2"
+                      />
+                    </div>
 
-                  <p className="text-secondary-dark text-center font-medium mt-4 text-sm">
-                    Crafting dynamic websites and web applications to make your
-                    online presence shine. From concept to execution, I bring
-                    vision to life with personalized seamless functionality.
-                  </p>
-                </div>
-              </div>
-            </li>
-            <li className="box-shadow-dull p-6 rounded flex items-center w-full">
-              <div className="flex flex-col items-center w-full">
-                <div className="border-dull-gray-bottom mb-3 pb-1 flex items-center justify-end w-full">
-                  <div className="flex items-center gap-2 text-semi-dark text-sm">
-                    <button
-                      className="text-primary-dark"
-                      onClick={() => setOnEditMode(true)}
-                    >
-                      <BorderColorIcon fontSize="small" />
-                    </button>
-                    <button className="pt-1 text-red">
-                      <DeleteSweepIcon />
-                    </button>
+                    <br />
+
+                    <h3 className="text-semi-dark font-bold text-xl mt-1 text-center quicksand">
+                      {item.serviceName}
+                    </h3>
+
+                    <p className="text-secondary-dark text-center font-medium mt-4 text-sm">
+                      {item.serviceDesc}
+                    </p>
                   </div>
                 </div>
-
-                {/* tools I used */}
-
-                <div className="w-full">
-                  <div className="w-full flex items-center justify-center">
-                    <Image
-                      src={Tailwind}
-                      alt=""
-                      style={{
-                        width: "6rem",
-                        height: "6rem",
-                        objectFit: "cover",
-                      }}
-                      className="w-full rounded border-dull-gray p-2"
-                    />
-                  </div>
-
-                  <br />
-
-                  <h3 className="text-semi-dark font-bold text-xl mt-1 text-center quicksand">
-                    Mobile Application
-                  </h3>
-
-                  <p className="text-secondary-dark text-center font-medium mt-4 text-sm">
-                    Bringing your ideas to life with custom mobile app
-                    development. I develop user-friendly cross-platform mobile
-                    applications that cater to your unique needs and objectives.
-                  </p>
-                </div>
-              </div>
-            </li>
+              </li>
+            ))}
           </ul>
         </section>
         <br />
