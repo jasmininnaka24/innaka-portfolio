@@ -3,7 +3,7 @@ const sequelize = require("../utils/sequelize");
 
 const AboutMeInParagraph = sequelize.define("AboutMeInParagraph", {
   paragraph: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   PortfolioAboutId: {

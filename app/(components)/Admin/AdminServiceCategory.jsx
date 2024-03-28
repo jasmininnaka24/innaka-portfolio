@@ -18,6 +18,7 @@ const AdminServiceCategory = ({
   const [servicesData, setServicesData] = useState([]);
   const [onHoldServiceData, setOnHoldServiceData] = useState(startingData);
   const [updateBtn, setUpdateBtn] = useState(false);
+  const [currentIdToUpdate, setCurrentIdToUpdate] = useState(0);
 
   const handleChangeForServiceData = (e) => {
     const { name, value } = e.target;
@@ -65,7 +66,73 @@ const AdminServiceCategory = ({
     if (data) {
       const res = await fetch(`/api/portfolioServicesApi`, data);
       if (res) {
-        getServicesData(); // Call the function with the correct name
+        getServicesData();
+        setOnHoldServiceData({
+          service_name: "",
+          service_desc: "",
+          image: "",
+        });
+      }
+    }
+  };
+
+  const updateService = async (e, id) => {
+    e.preventDefault();
+    const data = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        serviceName: onHoldServiceData?.service_name,
+        serviceDesc: onHoldServiceData?.service_desc,
+        serviceImgName:
+          onHoldServiceData?.image !== ""
+            ? onHoldServiceData?.image
+            : "user.png",
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioServicesApi`, data);
+      if (res) {
+        getServicesData();
+        setOnHoldServiceData({
+          service_name: "",
+          service_desc: "",
+          image: "",
+        });
+        setOnEditMode(false);
+        setCurrentIdToUpdate(0);
+      }
+    }
+  };
+
+  const deleteService = async (e, id) => {
+    e.preventDefault();
+
+    const data = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioServicesApi`, data);
+      if (res) {
+        getServicesData();
+        setOnHoldServiceData({
+          service_name: "",
+          service_desc: "",
+          image: "",
+        });
+        setOnEditMode(false);
+        setCurrentIdToUpdate(0);
       }
     }
   };
@@ -85,7 +152,15 @@ const AdminServiceCategory = ({
 
           <button
             className={!onEditMode && "hidden"}
-            onClick={() => setOnEditMode(false)}
+            onClick={() => {
+              setOnEditMode(false);
+              setCurrentIdToUpdate(0);
+              setOnHoldServiceData({
+                service_name: "",
+                service_desc: "",
+                image: "",
+              });
+            }}
           >
             <CloseIcon />
           </button>
@@ -122,16 +197,15 @@ const AdminServiceCategory = ({
                 </p>
               </div>
               <textarea
-                name=""
                 id=""
                 rows="5"
                 className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
                 placeholder="Type here..."
-              >
-                Crafting dynamic websites and web applications to make your
-                online presence shine. From concept to execution, I bring vision
-                to life with personalized seamless functionality.
-              </textarea>
+                name="service_desc"
+                value={onHoldServiceData.service_desc || ""}
+                required={true}
+                onChange={handleChangeForServiceData}
+              ></textarea>
             </div>
 
             <br />
@@ -197,7 +271,7 @@ const AdminServiceCategory = ({
             <div className="flex items-center justify-end w-full">
               <button
                 className={`w-1/3 py-2 rounded bg-primary text-white`}
-                onClick={(e) => updateUserImage(e, 1)}
+                onClick={(e) => updateService(e, currentIdToUpdate)}
               >
                 Update Service
               </button>
@@ -331,93 +405,78 @@ const AdminServiceCategory = ({
           <h2 className="text-xl text-primary font-bold quicksand ">
             Service List
           </h2>
-          <ul class="flex items-center text-center gap-2">
-            <li>
-              <Link
-                className="text-center font-bold px-2 quicksand text-dark text-sm"
-                href={"#about"}
-              >
-                All
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-center px-2 quicksand text-secondary-dark text-sm"
-                href={"#projects"}
-              >
-                Web
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-center px-2 quicksand text-secondary-dark text-sm"
-                href={"#qualifications"}
-              >
-                Mobile
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="text-center px-2 quicksand text-secondary-dark text-sm"
-                href={"#qualifications"}
-              >
-                Desktop
-              </Link>
-            </li>
-          </ul>
         </div>
         <br />
         <section className={` w-full relative my-3`}>
           <ul className="grid grid-cols-1 gap-5 w-full">
-            {servicesData.map((item, index) => (
-              <li
-                className="box-shadow-dull p-6 rounded flex items-center w-full"
-                key={index}
-              >
-                <div className="flex flex-col items-center w-full">
-                  <div className="border-dull-gray-bottom mb-3 pb-1 flex items-center justify-end w-full">
-                    <div className="flex items-center gap-2 text-semi-dark text-sm">
-                      <button
-                        className="text-primary-dark"
-                        onClick={() => setOnEditMode(true)}
-                      >
-                        <BorderColorIcon fontSize="small" />
-                      </button>
-                      <button className="pt-1 text-red">
-                        <DeleteSweepIcon />
-                      </button>
+            <p className="opacity-50 text-center">
+              {servicesData.length === 0 && `You haven't added a service yet.`}
+            </p>
+            {servicesData
+              .filter((item) => item.id !== currentIdToUpdate)
+              .sort((a, b) => b.id - a.id)
+              .map((item, index) => (
+                <li
+                  className="box-shadow-dull p-6 rounded flex items-center w-full"
+                  key={index}
+                >
+                  <div className="flex flex-col items-center w-full">
+                    <div className="border-dull-gray-bottom mb-3 pb-1 flex items-center justify-end w-full">
+                      <div className="flex items-center gap-2 text-semi-dark text-sm">
+                        <button
+                          className="text-primary-dark"
+                          onClick={(e) => {
+                            setOnEditMode(true);
+                            setCurrentIdToUpdate(item.id);
+                            setOnHoldServiceData({
+                              service_name: item.serviceName,
+                              service_desc: item.serviceDesc,
+                              image: "user.png",
+                            });
+                          }}
+                        >
+                          <BorderColorIcon fontSize="small" />
+                        </button>
+                        <button
+                          className="pt-1 text-red"
+                          onClick={(e) => {
+                            deleteService(e, item.id);
+                          }}
+                        >
+                          <DeleteSweepIcon />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* tools I used */}
+
+                    <div className="w-full">
+                      <div className="w-full flex items-center justify-center">
+                        <Image
+                          src={SocketIO}
+                          alt=""
+                          style={{
+                            width: "6rem",
+                            height: "6rem",
+                            objectFit: "cover",
+                          }}
+                          className="w-full rounded border-dull-gray p-2"
+                        />
+                      </div>
+
+                      <br />
+
+                      <h3 className="text-semi-dark font-bold text-xl mt-1 text-center quicksand">
+                        {item.serviceName}
+                      </h3>
+
+                      <p className="text-secondary-dark text-center font-medium mt-4 text-sm">
+                        {item.serviceDesc}
+                      </p>
                     </div>
                   </div>
-
-                  {/* tools I used */}
-
-                  <div className="w-full">
-                    <div className="w-full flex items-center justify-center">
-                      <Image
-                        src={SocketIO}
-                        alt=""
-                        style={{
-                          width: "6rem",
-                          height: "6rem",
-                          objectFit: "cover",
-                        }}
-                        className="w-full rounded border-dull-gray p-2"
-                      />
-                    </div>
-
-                    <br />
-
-                    <h3 className="text-semi-dark font-bold text-xl mt-1 text-center quicksand">
-                      {item.serviceName}
-                    </h3>
-
-                    <p className="text-secondary-dark text-center font-medium mt-4 text-sm">
-                      {item.serviceDesc}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
           </ul>
         </section>
         <br />

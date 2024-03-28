@@ -7,7 +7,7 @@ const PortfolioProjects = sequelize.define("PortfolioProjects", {
     allowNull: false,
   },
   projectDesc: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   projectLink: {
@@ -23,12 +23,23 @@ const PortfolioProjects = sequelize.define("PortfolioProjects", {
     allowNull: false,
   },
   imgName: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  projectCategory: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 });
 
 PortfolioProjects.associate = (models) => {
+  PortfolioProjects.belongsTo(models.PortfolioServices, {
+    foreignKey: {
+      name: "ProjectCategory",
+      allowNull: true,
+      onDelete: "cascade",
+    },
+  });
   PortfolioProjects.hasMany(models.PortfolioServices, {
     onDelete: "cascade",
   });

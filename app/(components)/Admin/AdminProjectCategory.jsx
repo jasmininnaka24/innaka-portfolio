@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const AdminProjectCategory = ({
   imports: { Image, Link },
@@ -21,6 +21,187 @@ const AdminProjectCategory = ({
   },
   technologyIcons: { MySQL },
 }) => {
+  // starting data
+  const startingData = {
+    project_title: "",
+    project_desc: "",
+    project_link: "",
+    github_link: "",
+    date_published: "",
+    img_name: "",
+    project_category: "",
+  };
+
+  // States
+  const [ProjectsData, setProjectsData] = useState([]);
+  const [onHoldProjectsData, setOnHoldProjectsData] = useState(startingData);
+  const [updateBtn, setUpdateBtn] = useState(false);
+  const [currentIdToUpdate, setCurrentIdToUpdate] = useState(0);
+
+  const [servicesData, setServicesData] = useState([]);
+
+  const handleChangeForProjectsData = (e) => {
+    const { name, value } = e.target;
+    setOnHoldProjectsData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+    console.log(value);
+  };
+
+  const getProjectsData = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioProjectsApi`, data);
+      const response = await res.json();
+      console.log(response.data);
+      setProjectsData(response.data);
+    }
+  };
+
+  const addProject = async (e) => {
+    e.preventDefault();
+    const data = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        projectTitle: onHoldProjectsData?.project_title,
+        projectDesc: onHoldProjectsData?.project_desc,
+        projectLink: onHoldProjectsData?.project_link,
+        githubLink: onHoldProjectsData?.github_link,
+        datePublished: onHoldProjectsData?.date_published,
+        projectCategory: onHoldProjectsData?.project_category,
+        imgName:
+          onHoldProjectsData?.img_name !== ""
+            ? onHoldProjectsData?.img_name
+            : "2024-03-28 18:33:18",
+      }),
+    };
+
+    console.log(data.body);
+
+    if (data) {
+      const res = await fetch(`/api/portfolioProjectsApi`, data);
+      if (res) {
+        getProjectsData();
+        setOnHoldProjectsData({
+          project_title: "",
+          project_desc: "",
+          project_link: "",
+          github_link: "",
+          date_published: "",
+          img_name: "",
+          project_category: "",
+        });
+      }
+
+      console.log(onHoldProjectsData);
+    }
+  };
+
+  const updateProject = async (e, id) => {
+    e.preventDefault();
+    const data = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        projectTitle: onHoldProjectsData?.project_title,
+        projectDesc: onHoldProjectsData?.project_desc,
+        projectLink: onHoldProjectsData?.project_link,
+        githubLink: onHoldProjectsData?.github_link,
+        datePublished: onHoldProjectsData?.date_published,
+        projectCategory: onHoldProjectsData?.project_category,
+        imgName:
+          onHoldProjectsData?.img_name !== ""
+            ? onHoldProjectsData?.img_name
+            : "user.png",
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioProjectsApi`, data);
+      if (res) {
+        getProjectsData();
+        setOnHoldProjectsData({
+          project_title: "",
+          project_desc: "",
+          project_link: "",
+          github_link: "",
+          date_published: "",
+          img_name: "",
+          project_category: "",
+        });
+        setOnEditMode(false);
+        setCurrentIdToUpdate(0);
+      }
+    }
+  };
+
+  const deleteProject = async (e, id) => {
+    e.preventDefault();
+
+    const data = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioProjectsApi`, data);
+      if (res) {
+        getProjectsData();
+        setOnHoldProjectsData({
+          project_title: "",
+          project_desc: "",
+          project_link: "",
+          github_link: "",
+          date_published: "",
+          img_name: "",
+          project_category: "",
+        });
+        setOnEditMode(false);
+        setCurrentIdToUpdate(0);
+      }
+    }
+  };
+
+  const getServicesData = async () => {
+    const data = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (data) {
+      const res = await fetch(`/api/portfolioServicesApi`, data);
+      const response = await res.json();
+      console.log(response.data);
+      setServicesData(response.data);
+    }
+  };
+
+  useEffect(() => {
+    getProjectsData();
+    getServicesData();
+  }, []);
+
   return (
     <div className="flex gap-5">
       <article
@@ -41,34 +222,19 @@ const AdminProjectCategory = ({
           </div>
 
           <select
-            name=""
-            id=""
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
+            name="project_category"
+            onChange={handleChangeForProjectsData}
           >
-            <option
-              className="hoverline text-lg quicksand"
-              value="Web Application/Website"
-            >
-              Web Application/Website
-            </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="Mobile Application"
-            >
-              Mobile Application
-            </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="Desktop Application"
-            >
-              Desktop Application
-            </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="UX/UI Design"
-            >
-              UX/UI Design
-            </option>
+            {servicesData.map((item, index) => (
+              <option
+                key={index}
+                className="hoverline text-lg quicksand"
+                value={item.id}
+              >
+                {item.serviceName}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -85,6 +251,10 @@ const AdminProjectCategory = ({
             type="text"
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
             placeholder="Type here..."
+            name="project_title"
+            value={onHoldProjectsData.project_title || ""}
+            required={true}
+            onChange={handleChangeForProjectsData}
           />
         </div>
 
@@ -97,11 +267,13 @@ const AdminProjectCategory = ({
             </p>
           </div>
           <textarea
-            name=""
-            id=""
             rows="5"
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
             placeholder="Type here..."
+            name="project_desc"
+            value={onHoldProjectsData.project_desc || ""}
+            required={true}
+            onChange={handleChangeForProjectsData}
           ></textarea>
         </div>
 
@@ -118,6 +290,10 @@ const AdminProjectCategory = ({
             type="text"
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
             placeholder="Type here..."
+            name="project_link"
+            value={onHoldProjectsData.project_link || ""}
+            required={true}
+            onChange={handleChangeForProjectsData}
           />
         </div>
 
@@ -134,6 +310,10 @@ const AdminProjectCategory = ({
             type="text"
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
             placeholder="Type here..."
+            name="github_link"
+            value={onHoldProjectsData.github_link || ""}
+            required={true}
+            onChange={handleChangeForProjectsData}
           />
         </div>
 
@@ -150,6 +330,10 @@ const AdminProjectCategory = ({
             type="date"
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
             placeholder="Type here..."
+            name="date_published"
+            value={onHoldProjectsData.date_published || ""}
+            required={true}
+            onChange={handleChangeForProjectsData}
           />
         </div>
 
@@ -254,7 +438,7 @@ const AdminProjectCategory = ({
         <div className="flex items-center justify-end w-full">
           <button
             className={`w-1/3 py-2 rounded bg-primary text-white`}
-            onClick={(e) => updateUserImage(e, 1)}
+            onClick={(e) => addProject(e)}
           >
             Add Project
           </button>
@@ -291,25 +475,16 @@ const AdminProjectCategory = ({
             id=""
             className="text-semi-dark border-thin-semi-dark text-md bg-dull-secondary-gray w-full px-3 py-2 rounded outline-none"
           >
-            <option className="hoverline text-lg quicksand">
+            <option className="hoverline text-lg quicksand" value="7">
               Web Application/Website
             </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="Mobile Application"
-            >
+            <option className="hoverline text-lg quicksand" value="8">
               Mobile Application
             </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="Desktop Application"
-            >
+            <option className="hoverline text-lg quicksand" value="9">
               Desktop Application
             </option>
-            <option
-              className="hoverline text-lg quicksand"
-              value="UX/UI Design"
-            >
+            <option className="hoverline text-lg quicksand" value="10">
               UX/UI Design
             </option>
           </select>

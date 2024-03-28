@@ -42,6 +42,8 @@ const AdminAboutCategory = ({
   };
 
   const [aboutData, setAboutData] = useState(startingData);
+  const [aboutDataExtractedValues, setAboutDataExtractedValues] =
+    useState(startingData);
   const [updateBtn, setUpdateBtn] = useState(false);
 
   const handleChangeForAboutData = (e) => {
@@ -120,12 +122,11 @@ const AdminAboutCategory = ({
       const res = await fetch(`/api/portfolioAboutsApi`, data);
 
       if (res) {
-        getaboutsParagraphData();
         console.log(aboutData.paragraphs);
-        if (aboutData.paragraphs.length > 0) {
-          updateAboutParagraphsData();
-        } else {
+        if (aboutData.paragraphs[0].id === null) {
           saveAboutParagraphsData();
+        } else {
+          updateAboutParagraphsData();
         }
       }
     }
@@ -163,6 +164,7 @@ const AdminAboutCategory = ({
     if (data) {
       const res = await fetch(`/api/portfolioAboutsParagraphApi`, data);
       const response = await res.json();
+      console.log(response?.data);
       if (response?.data.length > 0) {
         setAboutData((prevState) => ({
           ...prevState,
@@ -259,15 +261,15 @@ const AdminAboutCategory = ({
           <br />
           <br />
           {/* Paragraph */}
-          <div>
-            <div className="flex items-center justify-between">
-              <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
-                About me in paragraph form
-                <span className="text-primary font-bold"> *</span>
-              </p>
-            </div>
+          {updateBtn && (
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="mx-1 mb-1 text-primary-dark quicksand font-bold text-lg">
+                  About me in paragraph form
+                  <span className="text-primary font-bold"> *</span>
+                </p>
+              </div>
 
-            {updateBtn && (
               <ul className="grid grid-cols-1 gap-2 mt-3">
                 <li className="w-full">
                   <textarea
@@ -290,8 +292,8 @@ const AdminAboutCategory = ({
                   ></textarea>
                 </li>
               </ul>
-            )}
-          </div>
+            </div>
+          )}
         </article>
 
         <article className="w-1/2">

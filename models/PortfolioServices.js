@@ -7,7 +7,7 @@ const PortfolioServices = sequelize.define("PortfolioServices", {
     allowNull: false,
   },
   serviceDesc: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   serviceImgName: {
